@@ -32,7 +32,7 @@ const buttonStyle = ["w-full bg-amber-50 rounded-md mb-1 font-semibold text-xl p
 </script>
 
 <template>
-  <form class="flex flex-col px-6 py-4" @submit.prevent="sendLogin()">
+  <form class="flex flex-col px-6 py-4" @submit.prevent="sendLogin()" >
     <h3 class="font-semibold text-3xl text-center mb-3 text-amber-700">Login</h3>
       <input type="text" placeholder="Email"
              :class="inputStyle"

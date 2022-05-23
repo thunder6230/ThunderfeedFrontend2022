@@ -7,21 +7,23 @@ import { useToastStore } from "@/stores/Toast";
 import { ref, toRefs } from "vue";
 import { storeToRefs } from "pinia";
 import CommentComponent from "@/components/Comment/CommentComponent.vue";
+import AddCommentComponent from "@/components/Comment/AddCommentComponent.vue";
+import EditPostComponent from "@/components/UserPost/EditPostComponent.vue";
 // const {} = TailwindClasses
 const props = defineProps<{
   post: Post,
   index: number
 }>();
-const propsCopy = {...props}
+const propsCopy = { ...props };
 const myLikeId = ref<number>();
 const thunderFeedStore = useThunderFeedStore();
 const toastStore = useToastStore();
 const getFullName = (fname: string, lname: string): string => {
   return `${fname} ${lname}`;
 };
-const handleLike = async (postId: number, postLikes: Array<any>,) => {
+const handleLike = async (postId: number, postLikes: Array<any>) => {
   const iLiked = checkLike(postLikes);
-  if (iLiked) return removeLike(postId, postLikes, props.index);
+  if (iLiked) return removeLike(postId);
   return addLike(postId);
 
 };
@@ -34,22 +36,22 @@ const addLike = async (postId: number) => {
   toastStore.showToast(likeResponse);
   myLikeId.value = likeResponse.id;
 };
-const removeLike = async (postId: number, postLikes: Array<any>, index: number) => {
+const removeLike = async (postId: number) => {
   const likeResponse = await thunderFeedStore.removeLike(myLikeId.value);
   if (likeResponse.id > 0) {
-    const newPostData = await thunderFeedStore.getPost(postId);
-    console.log(newPostData)
-    thunderFeedStore.$patch(state => {
-      thunderFeedStore.posts[index] = newPostData;
-      console.log(thunderFeedStore.posts[index])
+    propsCopy.post.likes = Object.entries(propsCopy.post.likes).filter(([key, value]) => {
+      value.id != likeResponse.id;
     });
-    propsCopy.post.likes = newPostData.likes
   }
   toastStore.showToast(likeResponse);
 };
-const pluralize = (count: number) => {
-  if (count == 1) return "Like";
-  return "Likes";
+const pluralize = (word: string, count: number) => {
+  switch (word) {
+    case "like":
+      return count == 1 ? "Like" : "Likes";
+    case "comment":
+      return count == 1 ? "Comment" : "Comments";
+  }
 };
 const checkLike = (likes: Array<any>) => {
   const count = likes.filter(like => like.user.id == thunderFeedStore.getUserId);
@@ -57,11 +59,47 @@ const checkLike = (likes: Array<any>) => {
   myLikeId.value = count[0].id;
   return true;
 };
+const addComment = ref(false);
+const addNewCommentToProps = (comments) => {
+  propsCopy.post.comments = comments;
+  addComment.value = false;
+};
+
+const actionsVisible = ref(false);
+const handleMouseEnter = () => {
+  if (thunderFeedStore.getUserId != propsCopy.post.user.id) return actionsVisible.value = false;
+  return actionsVisible.value = true;
+
+};
+const handleDeletePost = async () => {
+  if (!confirm("Are you sure you want to delete this Post?")) return;
+  const deleteResponse = await thunderFeedStore.deletePost(propsCopy.post.id);
+  toastStore.showToast(deleteResponse);
+};
+const handleCommentDelete = (commentId: number) => {
+  console.log(propsCopy.post.comments);
+  propsCopy.post.comments = propsCopy.post.comments
+    .filter(comment => comment.id != commentId);
+};
+const isEditActive = ref(false);
+const handleEditInput = (newBody: string) => {
+  propsCopy.post.body = newBody;
+  isEditActive.value = false;
+};
 </script>
 
 <template>
-  <div :class="TailwindClasses.POST_ELEMENT_STYLE">
-    <div>
+  <li :class="TailwindClasses.POST_ELEMENT_STYLE" @mouseenter="handleMouseEnter()" @mouseleave="actionsVisible = false">
+    <div class="flex relative">
+      <Transition name="bounce-in">
+        <div class="absolute right-0 top-0 flex" v-if="actionsVisible">
+          <font-awesome-icon icon="edit" class="text-amber-800 hover:text-amber-500 transition ml-2 text-lg"
+                             @click="isEditActive = true"></font-awesome-icon>
+          <font-awesome-icon icon="circle-minus" class="text-red-500 hover:rotate-180 transition ml-2 text-lg"
+                             @click="handleDeletePost()"></font-awesome-icon>
+        </div>
+
+      </Transition>
       <RouterLink to="/">
         <div :class="TailwindClasses.IMAGE_DIV_STYLE"></div>
       </RouterLink>
@@ -69,60 +107,78 @@ const checkLike = (likes: Array<any>) => {
         <RouterLink to="/" class="font-semibold text-amber-900">
           {{ getFullName(propsCopy.post.user.firstName, propsCopy.post.user.lastName) }}
         </RouterLink>
-        <p class="text-amber-900">{{ propsCopy.post.body }}</p>
+        <TransitionGroup name="slide-in" tag="div" class="w-full">
+          <EditPostComponent :post-id="propsCopy.post.id" :body="propsCopy.post.body" v-if="isEditActive"
+                             @postEdited="handleEditInput($event)" @focusout="isEditActive = false" />
+          <p class="font-semibold text-amber-900 text-lg" v-else>{{ propsCopy.post.body }}</p>
+        </TransitionGroup>
 
 
-
-        <div>
-          <div>{{ propsCopy.post.likes.length }} {{ pluralize(propsCopy.post.likes.length) }}</div>
+        <div class="flex justify-between">
+          <div>{{ propsCopy.post.likes.length }} {{ pluralize("like", propsCopy.post.likes.length) }}</div>
+          <div>{{ propsCopy.post.comments.length }} {{ pluralize("comment", propsCopy.post.likes.length) }}</div>
         </div>
         <div :class="TailwindClasses.ACTIONS_STYLE">
-          <button :class="TailwindClasses.ACTION_BUTTON_STYLE" @click="handleLike(propsCopy.post.id, propsCopy.post.likes, index)">
-            <font-awesome-icon icon="thumbs-up" class="mr-2 transition-transform duration-500" :class="{'rotate-180':checkLike(propsCopy.post.likes)} " />
+          <button :class="TailwindClasses.ACTION_BUTTON_STYLE"
+                  @click="handleLike(propsCopy.post.id, propsCopy.post.likes)">
+            <font-awesome-icon icon="thumbs-up" class="mr-2 transition-transform duration-500"
+                               :class="{'rotate-180':checkLike(propsCopy.post.likes)} " />
             Like
           </button>
-          <button :class="TailwindClasses.ACTION_BUTTON_STYLE">
+          <button :class="TailwindClasses.ACTION_BUTTON_STYLE" @click="addComment = !addComment">
             <font-awesome-icon icon="comment" class="mr-2" />
             Comment
           </button>
         </div>
         <!--        COmments-->
-          <TransitionGroup class="comments" name="fade" duration="300">
-            <CommentComponent v-for="comment in propsCopy.post.comments" :key="comment.id" :comment="comment" />
-          </TransitionGroup>
+        <TransitionGroup name="list" v-if="propsCopy.post.comments.length > 0" tag="ul" appear>
+          <CommentComponent v-for="(comment, index) in propsCopy.post.comments" :key="comment.body" :comment="comment"
+                            :index="index" @deletedComment="handleCommentDelete($event)" />
+        </TransitionGroup>
         <!--      COmmentsENd-->
       </div>
 
-  <!--      AddComment-->
+      <!--      AddComment-->
     </div>
-    <Transition >
-      <div class="flex ">
-        <div :class="TailwindClasses.COMMENT_IMAGE_DIV_STYLE"></div>
-        <form @submit.prevent="" class="relative w-11/12">
-          <input type="text" class="w-full rounded-full " :class="TailwindClasses.INPUT_STYLE" style="margin-bottom: 0;">
-          <div class="absolute flex right-1 -inset-y-1/2">
-            <label for="" class=" cursor-pointer flex items-center justify-center">
-              <font-awesome-icon icon="file-image" :class="TailwindClasses.ADD_POST_BUTTONS_STYLE" class="p-2" />
-              <input type="file" name="" id="" class="hidden" @change="onFileChange($event.target.files)" >
-
-            </label>
-            <div class=" flex items-center justify-center">
-              <button type="submit" class="w-full flex items-center justify-center" >
-                <font-awesome-icon icon="comment-dots" :class="TailwindClasses.ADD_POST_BUTTONS_STYLE"/></button>
-            </div>
-
-          </div>
-        </form>
-
-
-      </div>
-
+    <Transition name="bounce-in">
+      <AddCommentComponent v-if="addComment" @commentAdded="addNewCommentToProps($event)"
+                           :post-id="propsCopy.post.id" />
     </Transition>
-  <!--      AddComment End-->
+    <!--      AddComment End-->
 
-  </div>
+  </li>
 </template>
 
 <style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: all 0.5s ease-out;
+}
 
+.fade-enter-from,
+.fade-enter-to {
+  opacity: 0;
+}
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+
+.bounce-in-enter-active,
+.bounce-in-leave-active {
+  transition: all 0.5s ease;
+}
+
+.bounce-in-enter-from,
+.bounce-in-leave-to {
+  opacity: 0;
+  transform: scale(1.2);
+}
 </style>

@@ -3,7 +3,7 @@ const theme = "amber";
 
  const tailwindClasses: TailwindClassesModel = {
   //Header
-  HEADER_STYLE: `flex w-full justify-between items-center bg-amber-700 px-4 py-2 h-12 fixed top-0 z-5000`,
+  HEADER_STYLE: `flex w-full justify-between items-center bg-amber-700 px-4 py-2 h-12 fixed top-0 z-50`,
   NAV_LINK_STYLE: `text-amber-50 font-semibold mr-2 px-1 border-b-2 border-amber-700 hover:border-amber-50 transition`,
   //POST
   IMAGE_DIV_STYLE: `mr-4 w-12 h-12 bg-amber-700 rounded-full`,
@@ -20,7 +20,7 @@ const theme = "amber";
    COMMENT_ACTIONS_STYLE: `flex`,
    COMMENT_ACTION_BUTTON_STYLE: `font-semibold text-amber-900 hover:text-amber-700 transition mr-2 text-sm mt-1`,
   //AUTH MODAL
-  INPUT_STYLE: `mb-3 placeholder-amber-700 text-lg text-amber-500 focus:outline-none focus:border-amber-500 py-1 px-2 rounded-md border-amber-700 border-2 hover:border-amber-500 transition `,
+  INPUT_STYLE: `placeholder-amber-700 text-lg text-amber-500 focus:outline-none focus:border-amber-500 py-1 px-2 rounded-md border-amber-700 border-2 hover:border-amber-500 transition `,
   BUTTON_STYLE: `w-full bg-amber-50 rounded-md mb-1 font-semibold text-xl py-1 text-amber-700 hover:text-amber-50 hover:bg-amber-700 border-2 border-amber-700 transition`
 };
 export default tailwindClasses

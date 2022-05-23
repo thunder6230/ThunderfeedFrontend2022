@@ -74,8 +74,9 @@ thunderFeedStore.checkUserLoggedIn()
   }
   .slide-top-enter-from,
   .slide-top-enter-to{
-    transform: translateY(-100%);
+    transform: translateY(-60px);
     opacity: 0;
+    position: absolute;
   }
   .fade-enter-active,
   .fade-leave-active{

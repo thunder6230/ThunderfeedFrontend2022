@@ -15,10 +15,12 @@ onMounted(async () => {
 
 <template>
   <section class="flex flex-col items-center w-full ">
-    <AddPostComponent />
-    <section v-if="thunderFeedStore.posts.length > 0" class="flex flex-col items-center w-full">
-        <PostComponent v-for="(post, index) in thunderFeedStore.posts" :key="post.id + post.likes.length" :post="post" :index="index" />
-    </section>
+    <Transition name="slide-in" appear>
+      <AddPostComponent v-if="thunderFeedStore.userLoggedIn"/>
+    </Transition>
+    <TransitionGroup appear name="list" v-if="thunderFeedStore.posts.length > 0" class="flex flex-col items-center w-full" tag="ul">
+        <PostComponent v-for="(post, index) in thunderFeedStore.posts" :key="post.id" :post="post" :index="index" />
+    </TransitionGroup>
     <h3 v-else>There are No posts yet</h3>
   </section>
 </template>
@@ -31,6 +33,25 @@ onMounted(async () => {
 .fade-enter-from,
 .fade-enter-to{
   opacity: 0;
+  position: absolute;
+}
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+.slide-in-enter-active,
+.slide-in-leave-active {
+  transition: all 0.3s ease;
+}
+.slide-in-enter-from,
+.slide-in-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
   position: absolute;
 }
 </style>

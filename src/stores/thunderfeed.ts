@@ -2,9 +2,8 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 import axios from "axios";
 import type { ThunderStore } from "@/models/storeModel";
 import type { LoginModel, RegisterModel } from "@/models/AuthModels";
-import type { AxiosError } from "axios";
-import type { AddPostLikeParams, AddPostParams } from "@/models/HelperModels";
-
+import type { AddCommentLikeParams, AddPostLikeParams, AddPostParams } from "@/models/HelperModels";
+axios.defaults.baseURL = "https://localhost:7100"
 export const useThunderFeedStore = defineStore({
   id: "thunderfeed",
   state: () => ({
@@ -22,14 +21,14 @@ export const useThunderFeedStore = defineStore({
         GET: "/UserPost/getPost/",
         ADD: "/UserPost/AddPost",
         UPDATE: "/UserPost/UpdatePost",
-        DELETE: "/UserPost/DeletePost"
+        DELETE: "/UserPost/DeletePost/"
       },
       COMMENT: {
         GET_ALL: "",
-        GET: "",
-        ADD: "",
-        UPDATE: "",
-        DELETE: ""
+        GET: "/Comment/Get/",
+        ADD: "/Comment/Post/Add",
+        UPDATE: "/Comment/Update",
+        DELETE: "/Comment/Delete/"
       },
       LIKE: {
         ADD_POST: "/Like/AddPost",
@@ -52,6 +51,8 @@ export const useThunderFeedStore = defineStore({
     async checkUserLoggedIn() {
       const userLoggedIn = sessionStorage.getItem("userLoggedIn");
       if (userLoggedIn == undefined) return;
+      const userData = this.parseJwt(userLoggedIn)
+      if (Date.now() >= userData.exp * 1000) return sessionStorage.removeItem("userLoggedIn");
       this.$patch(state => {
         state.userLoggedIn = true;
         state.userToken = userLoggedIn;
@@ -60,7 +61,7 @@ export const useThunderFeedStore = defineStore({
       });
     },
     async login(loginData: LoginModel) {
-      return axios.post(this.urls.BASE + this.urls.AUTH.LOGIN, loginData)
+      return axios.post(this.urls.AUTH.LOGIN, loginData)
         .then(resp => {
           this.$patch(state => {
             state.userLoggedIn = true;
@@ -82,7 +83,7 @@ export const useThunderFeedStore = defineStore({
       }
     },
     async register(registerData: RegisterModel) {
-      return axios.post(this.urls.BASE + this.urls.AUTH.REGISTER, registerData)
+      return axios.post(this.urls.AUTH.REGISTER, registerData)
         .then(resp => {
           return { type: "Success", message: resp.data };
         })
@@ -121,9 +122,6 @@ export const useThunderFeedStore = defineStore({
         state.auth.isRegisterActive = false;
       });
     },
-    getWeather() {
-      axios.get(this.urls.BASE + "/WeatherForeCast", this.getAuthHeaderConfig()).then(resp => console.log(resp));
-    },
     async logOut() {
       this.$patch(state => {
         state.userLoggedIn = false;
@@ -133,7 +131,7 @@ export const useThunderFeedStore = defineStore({
       return { type: "Success", message: "Logout Successful" };
     },
     async getPosts() {
-      return axios.get(this.urls.BASE + this.urls.POST.GET_ALL).then(resp => {
+      return axios.get(this.urls.POST.GET_ALL).then(resp => {
         console.log(resp.data);
         this.$patch(state => state.posts = resp.data);
         return { type: "Success", message: "Posts has been loaded" };
@@ -142,12 +140,12 @@ export const useThunderFeedStore = defineStore({
       });
     },
     async addPost(params: AddPostParams) {
-      return axios.post(this.urls.BASE + this.urls.POST.ADD, params, this.getAuthHeaderConfig())
+      return axios.post(this.urls.POST.ADD, params, this.getAuthHeaderConfig())
         .then(resp => {
           this.$patch(state => {
             state.posts.unshift(resp.data);
           });
-          return { type: "Success", message: "Post has been successfully added" };
+          return { type: "Success", message: "Post have been successfully added" };
         })
         .catch((error) => {
           console.log(error);
@@ -158,8 +156,8 @@ export const useThunderFeedStore = defineStore({
       return { headers: { "Authorization": `bearer ${this.userToken}` } };
     },
     async addPostLike(params: AddPostLikeParams) {
-      console.log(this.urls.BASE + this.urls.LIKE.ADD_POST);
-      return axios.post(this.urls.BASE + this.urls.LIKE.ADD_POST, params, this.getAuthHeaderConfig())
+      console.log(this.urls.LIKE.ADD_POST);
+      return axios.post(this.urls.LIKE.ADD_POST, params, this.getAuthHeaderConfig())
         .then(resp => {
           this.$patch(state => {
             state.posts.filter(post => {
@@ -175,20 +173,82 @@ export const useThunderFeedStore = defineStore({
           return { type: "Error", message: "Error like post. Please try again" };
         });
     },
-    async getPost(id){
-      return axios.get(this.urls.BASE + this.urls.POST.GET +  id).then(resp => resp.data)
+    async addCommentLike(params: AddCommentLikeParams) {
+      return axios.post(this.urls.LIKE.ADD_COMMENT, params, this.getAuthHeaderConfig())
+        .then(resp => {
+            return { type: "Success", message: "Like has been successfully added" , like: resp.data};
+          })
+        .catch((error) => {
+          console.log(error);
+          return { type: "Error", message: "Error like post. Please try again" };
+        });
+    },
+    async getPost(id: number){
+      return axios.get(this.urls.POST.GET +  id).then(resp => resp.data)
+    },
+    async getComment(id: number){
+      return axios.get(this.urls.COMMENT.GET +  id).then(resp => resp.data)
     },
     async removeLike(likeId: number) {
 
-      return axios.delete(this.urls.BASE + this.urls.LIKE.DELETE+ likeId, this.getAuthHeaderConfig())
+      return axios.delete(this.urls.LIKE.DELETE+ likeId, this.getAuthHeaderConfig())
         .then(resp => {
           return { type: "Success", message: "Like has been deleted", id:likeId };
         })
         .catch((error) => {
           console.log(error);
-          return { type: "Error", message: "Error at adding post. Please try again" };
+          return { type: "Error", message: "Error at deleting like. Please try again" };
         });
 
+    },
+    async addComment(params){
+      return axios.post(this.urls.COMMENT.ADD, params, this.getAuthHeaderConfig())
+        .then(resp => {return {comment: resp.data, type: "Success", message: "Comment has been successfully added"}})
+        .catch((error) => {
+          console.log(error);
+          return { type: "Error", message: "Error at adding comment. Please try again" };
+        });
+    },
+    async deletePost(postId: number){
+       return axios.delete(this.urls.POST.DELETE + postId, this.getAuthHeaderConfig())
+         .then(resp => {
+           this.posts = this.posts.filter(post => post.id != resp.data)
+           {return {type: "Success", message: "Post has been successfully deleted"}}
+         })
+         .catch((error) => {
+           console.log(error);
+           return { type: "Error", message: "Error at deleting Post. Please try again" };
+         });
+    },
+    async deleteComment(commentId: number){
+       return axios.delete(this.urls.COMMENT.DELETE + commentId, this.getAuthHeaderConfig())
+         .then(resp => {
+           {return {id: resp.data, type: "Success", message: "Comment has been successfully deleted"}}
+         })
+         .catch((error) => {
+           console.log(error);
+           return { type: "Error", message: "Error at deleting Post. Please try again" };
+         });
+    },
+    async updateComment(props){
+      return axios.put(this.urls.COMMENT.UPDATE, props, this.getAuthHeaderConfig())
+        .then(resp => {
+          {return {newBody: resp.data, type: "Success", message: "Comment has been successfully edited"}}
+        })
+        .catch((error) => {
+          console.log(error);
+          return { type: "Error", message: "Error at editing Comment. Please try again" };
+        });
+    },
+    async updatePost(props){
+      return axios.put(this.urls.POST.UPDATE, props, this.getAuthHeaderConfig())
+        .then(resp => {
+          {return {newBody: resp.data, type: "Success", message: "Post has been successfully edited"}}
+        })
+        .catch((error) => {
+          console.log(error);
+          return { type: "Error", message: "Error at editing Post. Please try again" };
+        });
     }
   }
 });

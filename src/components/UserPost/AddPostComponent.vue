@@ -15,6 +15,10 @@ const handleSubmit = async () => {
   // return console.log(params.value)
  const result= await thunderFeedStore.addPost(params.value)
   toastStore.showToast(result)
+  if(result.type == "Success") {
+    params.value.body = ""
+    params.value.file = null
+  }
 
 }
 const onFileChange = (files: any[]) => {
