@@ -22,7 +22,6 @@ const params = ref<AddCommentParams>({
 })
 const emit = defineEmits(['commentAdded'])
 const handleSubmit = async () => {
-  // return console.log(params.value)
   const result = await thunderFeedStore.addComment(params.value)
   emit("commentAdded", result.comment)
   toastStore.showToast(result)

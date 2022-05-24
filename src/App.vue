@@ -5,14 +5,13 @@ import ToastMessageComponent from "@/components/Helpers/ToastMessageComponent.vu
 import  tailwindClasses   from "@/utilities/TailwindClasses"
 import { useToastStore} from "@/stores/Toast";
 import { useThunderFeedStore} from "@/stores/thunderfeed";
-import type { TailwindClassesModel } from "@/utilities/TailwindClassesModel";
 const thunderFeedStore = useThunderFeedStore()
 const toastStore = useToastStore()
 const handleLogout = async () => {
   const isLoggedOut = await thunderFeedStore.logOut()
   toastStore.showToast(isLoggedOut)
 }
-const {NAV_LINK_STYLE, HEADER_STYLE }:TailwindClassesModel = tailwindClasses
+const {NAV_LINK_STYLE, HEADER_STYLE } = tailwindClasses
 thunderFeedStore.checkUserLoggedIn()
 </script>
 
@@ -88,4 +87,16 @@ thunderFeedStore.checkUserLoggedIn()
     position: absolute;
   }
 
+</style>
+<style>
+
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
 </style>
