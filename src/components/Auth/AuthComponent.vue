@@ -7,13 +7,10 @@ const thunderFeedStore = useThunderFeedStore()
 
 <template>
   <div class="bg-black bg-opacity-50 w-full h-full flex justify-center items-center fixed top-0 z-6000" @click="thunderFeedStore.closeAuth()">
-    <div @click.stop class="modalContent bg-amber-50 w-96 rounded-md shadow-md shadow-amber-400">
-      <TransitionGroup name="list-up">
-        <LoginComponent v-if="thunderFeedStore.auth.isLoginActive" :key="1" />
-        <RegisterComponent v-if="thunderFeedStore.auth.isRegisterActive" :key="2"/>
-      </TransitionGroup>
-
-    </div>
+    <TransitionGroup name="list-up">
+      <LoginComponent v-if="thunderFeedStore.auth.isLoginActive" :key="1" />
+      <RegisterComponent v-if="thunderFeedStore.auth.isRegisterActive" :key="2" />
+    </TransitionGroup>
   </div>
 </template>
 

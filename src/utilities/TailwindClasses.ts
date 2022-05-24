@@ -17,6 +17,7 @@ const theme = "amber";
 //COMMENT
   COMMENT_IMAGE_DIV_STYLE: `mr-4 w-10 h-10 bg-amber-700 rounded-full`,
    COMMENT_CONTENT_STYLE: `w-full rounded-md bg-amber-300 text-white px-2 pt-1 pb-2`,
+   REPLY_CONTENT_STYLE: `w-full rounded-md bg-amber-100 text-white px-2 pt-1 pb-2`,
    COMMENT_ACTIONS_STYLE: `flex`,
    COMMENT_ACTION_BUTTON_STYLE: `font-semibold text-amber-900 hover:text-amber-700 transition mr-2 text-sm mt-1`,
   //AUTH MODAL
@@ -39,7 +40,8 @@ export interface TailwindClassesModel {
   COMMENT_IMAGE_DIV_STYLE: string,
   COMMENT_CONTENT_STYLE: string,
   COMMENT_ACTIONS_STYLE: string,
-  COMMENT_ACTION_BUTTON_STYLE:string
+  COMMENT_ACTION_BUTTON_STYLE:string,
+  REPLY_CONTENT_STYLE: string
 }
 
 

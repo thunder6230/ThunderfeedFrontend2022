@@ -2,7 +2,7 @@ import { acceptHMRUpdate, defineStore } from "pinia";
 import axios from "axios";
 import type { ThunderStore } from "@/models/storeModel";
 import type { LoginModel, RegisterModel } from "@/models/AuthModels";
-import type { AddCommentLikeParams, AddPostLikeParams, AddPostParams } from "@/models/HelperModels";
+import type { AddCommentLikeParams, AddPostLikeParams, AddPostParams, AddReplyLikeParams } from "@/models/HelperModels";
 axios.defaults.baseURL = "https://localhost:7100"
 export const useThunderFeedStore = defineStore({
   id: "thunderfeed",
@@ -23,16 +23,25 @@ export const useThunderFeedStore = defineStore({
         UPDATE: "/UserPost/UpdatePost",
         DELETE: "/UserPost/DeletePost/"
       },
+      REPLY: {
+        GET_ALL: "/Reply/getAll",
+        GET: "/Reply/get/",
+        ADD: "/Reply/Add",
+        UPDATE: "/Reply/Update",
+        DELETE: "/Reply/Delete/"
+      },
       COMMENT: {
         GET_ALL: "",
         GET: "/Comment/Get/",
         ADD: "/Comment/Post/Add",
         UPDATE: "/Comment/Update",
-        DELETE: "/Comment/Delete/"
+        DELETE: "/Comment/Delete/",
+        ADD_REPLY: "/Comment/Reply/Add"
       },
       LIKE: {
         ADD_POST: "/Like/AddPost",
         ADD_COMMENT: "/Like/AddComment",
+        ADD_REPLY: "/Like/AddReply",
         DELETE: "/Like/Delete/"
       }
     },
@@ -183,6 +192,16 @@ export const useThunderFeedStore = defineStore({
           return { type: "Error", message: "Error like post. Please try again" };
         });
     },
+    async addReplyLike(params: AddReplyLikeParams) {
+      return axios.post(this.urls.LIKE.ADD_REPLY, params, this.getAuthHeaderConfig())
+        .then(resp => {
+            return { type: "Success", message: "Like has been successfully added" , like: resp.data};
+          })
+        .catch((error) => {
+          console.log(error);
+          return { type: "Error", message: "Error like post. Please try again" };
+        });
+    },
     async getPost(id: number){
       return axios.get(this.urls.POST.GET +  id).then(resp => resp.data)
     },
@@ -209,6 +228,14 @@ export const useThunderFeedStore = defineStore({
           return { type: "Error", message: "Error at adding comment. Please try again" };
         });
     },
+    async addReply(params){
+      return axios.post(this.urls.REPLY.ADD, params, this.getAuthHeaderConfig())
+        .then(resp => {return {reply: resp.data, type: "Success", message: "Reply has been successfully added"}})
+        .catch((error) => {
+          console.log(error);
+          return { type: "Error", message: "Error at adding reply. Please try again" };
+        });
+    },
     async deletePost(postId: number){
        return axios.delete(this.urls.POST.DELETE + postId, this.getAuthHeaderConfig())
          .then(resp => {
@@ -228,6 +255,16 @@ export const useThunderFeedStore = defineStore({
          .catch((error) => {
            console.log(error);
            return { type: "Error", message: "Error at deleting Post. Please try again" };
+         });
+    },
+    async deleteReply(replyId: number){
+       return axios.delete(this.urls.REPLY.DELETE + replyId, this.getAuthHeaderConfig())
+         .then(resp => {
+           {return {id: resp.data, type: "Success", message: "Reply has been successfully deleted"}}
+         })
+         .catch((error) => {
+           console.log(error);
+           return { type: "Error", message: "Error at deleting Reply. Please try again" };
          });
     },
     async updateComment(props){
