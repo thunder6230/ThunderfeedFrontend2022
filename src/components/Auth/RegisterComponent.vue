@@ -30,6 +30,7 @@ const buttonStyle = "w-full bg-amber-50 rounded-md mb-1 font-semibold text-xl py
 </script>
 
 <template>
+  <div @click.stop class="modalContent bg-amber-50 w-96 rounded-md shadow-md shadow-amber-400">
   <form class="flex flex-col px-6 py-4" @submit.prevent="sendRegister()">
     <h3 class="font-semibold text-3xl text-center my-3 text-amber-700">Register</h3>
 
@@ -66,6 +67,7 @@ const buttonStyle = "w-full bg-amber-50 rounded-md mb-1 font-semibold text-xl py
             :class="buttonStyle">Register</button>
     <small @click="thunderFeedStore.goToLogin()" class="text-center text-amber-700 font-semibold cursor-pointer">Already have an Account? Click here!</small>
   </form>
+  </div>
 </template>
 
 <style>

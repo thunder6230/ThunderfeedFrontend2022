@@ -5,6 +5,8 @@ import TailwindClasses from "@/utilities/TailwindClasses";
 import { ref } from "vue";
 import type { AddCommentLikeParams, AddPostLikeParams } from "@/models/HelperModels";
 import EditCommentComponent from "@/components/Comment/EditCommentComponent.vue";
+import AddReplyComponent from "@/components/Comment/Reply/AddReplyComponent.vue";
+import ReplyComponent from "@/components/Comment/Reply/ReplyComponent.vue";
 
 const props = defineProps<{
   comment: any,
@@ -60,10 +62,20 @@ const handleDelete = async () => {
   toastStore.showToast(deleteResponse);
 };
 const isEditActive = ref(false);
+const isAddReplyActive = ref(false);
 const handleEditInput = (newBody: string) => {
-  propsCopy.comment.body = newBody
-  isEditActive.value = false
+  propsCopy.comment.body = newBody;
+  isEditActive.value = false;
 };
+const handleAddedReply = (reply) => {
+  propsCopy.comment.replies.push(reply)
+  isAddReplyActive.value = false
+}
+const handleReplyDelete = (replyId: number) => {
+  propsCopy.comment.replies = propsCopy.comment.replies
+    .filter(reply => reply.id != replyId);
+};
+
 
 </script>
 <template>
@@ -71,31 +83,42 @@ const handleEditInput = (newBody: string) => {
     <RouterLink to="/">
       <div :class="TailwindClasses.COMMENT_IMAGE_DIV_STYLE"></div>
     </RouterLink>
-    <div :class="TailwindClasses.COMMENT_CONTENT_STYLE">
-      <RouterLink to="/" class="font-semibold text-black m-0 text-sm">
-        {{ getFullName(propsCopy.comment.user.firstName, propsCopy.comment.user.lastName) }}
-      </RouterLink>
-      <TransitionGroup name="slide-in" tag="div" class="w-full">
-        <EditCommentComponent :comment-id="propsCopy.comment.id" :body="propsCopy.comment.body" v-if="isEditActive"
-                              @commentEdited="handleEditInput($event)" @focusout="isEditActive = false" />
-        <p class="font-semibold text-amber-900 text-lg leading-3" v-else>{{ propsCopy.comment.body }}</p>
+    <div class="flex flex-col w-11/12">
 
-      </TransitionGroup>
-      <div :class="TailwindClasses.COMMENT_ACTIONS_STYLE">
-        <button :class="TailwindClasses.COMMENT_ACTION_BUTTON_STYLE"
-                @click="handleLike(propsCopy.comment.id, propsCopy.comment.likes)">
-          {{ checkLike(propsCopy.comment.likes) ? "Don't Like" : "Like" }}
-        </button>
-        <button :class="TailwindClasses.COMMENT_ACTION_BUTTON_STYLE">Comment</button>
-        <button :class="TailwindClasses.COMMENT_ACTION_BUTTON_STYLE"
-                v-if="propsCopy.comment.user.id == thunderFeedStore.getUserId" @click="isEditActive = true;">Edit
-        </button>
-        <button :class="TailwindClasses.COMMENT_ACTION_BUTTON_STYLE"
-                @click="handleDelete(propsCopy.comment.id, propsCopy.comment.likes, index)"
-                v-if="propsCopy.comment.user.id == thunderFeedStore.getUserId">Delete
-        </button>
+      <div :class="TailwindClasses.COMMENT_CONTENT_STYLE">
+        <RouterLink to="/" class="font-semibold text-black m-0 text-sm">
+          {{ getFullName(propsCopy.comment.user.firstName, propsCopy.comment.user.lastName) }}
+        </RouterLink>
+        <TransitionGroup name="slide-in" tag="div" class="w-full">
+          <EditCommentComponent :comment-id="propsCopy.comment.id" :body="propsCopy.comment.body" v-if="isEditActive"
+                                @commentEdited="handleEditInput($event)" @focusout="isEditActive = false" />
+          <p class="font-semibold text-amber-900 text-lg leading-3" v-else>{{ propsCopy.comment.body }}</p>
+
+        </TransitionGroup>
+        <div :class="TailwindClasses.COMMENT_ACTIONS_STYLE">
+          <button :class="TailwindClasses.COMMENT_ACTION_BUTTON_STYLE"
+                  @click="handleLike(propsCopy.comment.id, propsCopy.comment.likes)">
+            {{ checkLike(propsCopy.comment.likes) ? "Don't Like" : "Like" }}
+          </button>
+          <button :class="TailwindClasses.COMMENT_ACTION_BUTTON_STYLE" @click="isAddReplyActive = true">Reply</button>
+          <button :class="TailwindClasses.COMMENT_ACTION_BUTTON_STYLE"
+                  v-if="propsCopy.comment.user.id == thunderFeedStore.getUserId" @click="isEditActive = true;">Edit
+          </button>
+          <button :class="TailwindClasses.COMMENT_ACTION_BUTTON_STYLE"
+                  @click="handleDelete(propsCopy.comment.id, propsCopy.comment.likes, index)"
+                  v-if="propsCopy.comment.user.id == thunderFeedStore.getUserId">Delete
+          </button>
+
+        </div>
       </div>
+      <TransitionGroup name="list" tag="ul" appear >
+        <ReplyComponent v-for="(reply, index) in propsCopy.comment.replies" :key="reply.body" :reply="reply"
+                        :index="index" @deletedReply="handleReplyDelete($event)" @addReply="isAddReplyActive = true"/>
+        <AddReplyComponent v-if="isAddReplyActive" @replyAdded="handleAddedReply($event)" :comment-id="propsCopy.comment.id"/>
+      </TransitionGroup>
     </div>
+    <!--        COmments-->
+    <!--      COmmentsENd-->
   </li>
 </template>
 

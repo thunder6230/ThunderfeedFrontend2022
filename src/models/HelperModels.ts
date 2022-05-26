@@ -31,6 +31,12 @@ export interface EditCommentParams {
   body: string,
   file: string | null
 }
+export interface EditReplyParams {
+  userId: number,
+  replyId: number,
+  body: string,
+  file: string | null
+}
 export interface EditPostparams {
   userId: number,
   postId: number,
@@ -43,5 +49,9 @@ export interface AddPostLikeParams {
 }
 export interface AddCommentLikeParams {
   commentId: number,
+  userId: number,
+}
+export interface AddReplyLikeParams {
+  replyId: number,
   userId: number,
 }
