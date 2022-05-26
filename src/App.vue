@@ -118,4 +118,5 @@ thunderFeedStore.checkUserLoggedIn()
 .bounce-in-leave-to {
   opacity: 0;
   transform: scale(1.2);
+}
 </style>
