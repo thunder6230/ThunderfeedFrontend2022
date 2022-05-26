@@ -17,7 +17,7 @@ export interface ThemeModel {
 export interface AddPostParams {
   userId: number,
   body: string,
-  file: string | null
+  files: Array<File>
 }
 export interface AddCommentParams {
   userId: number,

@@ -3,7 +3,8 @@ import axios from "axios";
 import type { ThunderStore } from "@/models/storeModel";
 import type { LoginModel, RegisterModel } from "@/models/AuthModels";
 import type { AddCommentLikeParams, AddPostLikeParams, AddPostParams } from "@/models/HelperModels";
-axios.defaults.baseURL = "https://localhost:7100"
+
+axios.defaults.baseURL = "https://localhost:7100";
 export const useThunderFeedStore = defineStore({
   id: "thunderfeed",
   state: () => ({
@@ -51,7 +52,7 @@ export const useThunderFeedStore = defineStore({
     async checkUserLoggedIn() {
       const userLoggedIn = sessionStorage.getItem("userLoggedIn");
       if (userLoggedIn == undefined) return;
-      const userData = this.parseJwt(userLoggedIn)
+      const userData = this.parseJwt(userLoggedIn);
       if (Date.now() >= userData.exp * 1000) return sessionStorage.removeItem("userLoggedIn");
       this.$patch(state => {
         state.userLoggedIn = true;
@@ -139,8 +140,8 @@ export const useThunderFeedStore = defineStore({
         return { type: "Error", message: "error.response.data" };
       });
     },
-    async addPost(params: AddPostParams) {
-      return axios.post(this.urls.POST.ADD, params, this.getAuthHeaderConfig())
+    async addPost(params: FormData) {
+      return axios.post(this.urls.POST.ADD, params, this.getAuthHeaderConfigWithFileUpload())
         .then(resp => {
           this.$patch(state => {
             state.posts.unshift(resp.data);
@@ -155,6 +156,14 @@ export const useThunderFeedStore = defineStore({
     getAuthHeaderConfig() {
       return { headers: { "Authorization": `bearer ${this.userToken}` } };
     },
+    getAuthHeaderConfigWithFileUpload() {
+      return {
+        headers: {
+          "Authorization": `bearer ${this.userToken}`,
+          "content-type": "multipart/form-data"
+        }
+      };
+    },
     async addPostLike(params: AddPostLikeParams) {
       console.log(this.urls.LIKE.ADD_POST);
       return axios.post(this.urls.LIKE.ADD_POST, params, this.getAuthHeaderConfig())
@@ -166,7 +175,7 @@ export const useThunderFeedStore = defineStore({
               }
             });
           });
-          return { type: "Success", message: "Like has been successfully added" , id: resp.data.id};
+          return { type: "Success", message: "Like has been successfully added", id: resp.data.id };
         })
         .catch((error) => {
           console.log(error);
@@ -176,24 +185,24 @@ export const useThunderFeedStore = defineStore({
     async addCommentLike(params: AddCommentLikeParams) {
       return axios.post(this.urls.LIKE.ADD_COMMENT, params, this.getAuthHeaderConfig())
         .then(resp => {
-            return { type: "Success", message: "Like has been successfully added" , like: resp.data};
-          })
+          return { type: "Success", message: "Like has been successfully added", like: resp.data };
+        })
         .catch((error) => {
           console.log(error);
           return { type: "Error", message: "Error like post. Please try again" };
         });
     },
-    async getPost(id: number){
-      return axios.get(this.urls.POST.GET +  id).then(resp => resp.data)
+    async getPost(id: number) {
+      return axios.get(this.urls.POST.GET + id).then(resp => resp.data);
     },
-    async getComment(id: number){
-      return axios.get(this.urls.COMMENT.GET +  id).then(resp => resp.data)
+    async getComment(id: number) {
+      return axios.get(this.urls.COMMENT.GET + id).then(resp => resp.data);
     },
     async removeLike(likeId: number) {
 
-      return axios.delete(this.urls.LIKE.DELETE+ likeId, this.getAuthHeaderConfig())
+      return axios.delete(this.urls.LIKE.DELETE + likeId, this.getAuthHeaderConfig())
         .then(resp => {
-          return { type: "Success", message: "Like has been deleted", id:likeId };
+          return { type: "Success", message: "Like has been deleted", id: likeId };
         })
         .catch((error) => {
           console.log(error);
@@ -201,49 +210,59 @@ export const useThunderFeedStore = defineStore({
         });
 
     },
-    async addComment(params){
+    async addComment(params) {
       return axios.post(this.urls.COMMENT.ADD, params, this.getAuthHeaderConfig())
-        .then(resp => {return {comment: resp.data, type: "Success", message: "Comment has been successfully added"}})
+        .then(resp => {
+          return { comment: resp.data, type: "Success", message: "Comment has been successfully added" };
+        })
         .catch((error) => {
           console.log(error);
           return { type: "Error", message: "Error at adding comment. Please try again" };
         });
     },
-    async deletePost(postId: number){
-       return axios.delete(this.urls.POST.DELETE + postId, this.getAuthHeaderConfig())
-         .then(resp => {
-           this.posts = this.posts.filter(post => post.id != resp.data)
-           {return {type: "Success", message: "Post has been successfully deleted"}}
-         })
-         .catch((error) => {
-           console.log(error);
-           return { type: "Error", message: "Error at deleting Post. Please try again" };
-         });
+    async deletePost(postId: number) {
+      return axios.delete(this.urls.POST.DELETE + postId, this.getAuthHeaderConfig())
+        .then(resp => {
+          this.posts = this.posts.filter(post => post.id != resp.data);
+          {
+            return { type: "Success", message: "Post has been successfully deleted" };
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          return { type: "Error", message: "Error at deleting Post. Please try again" };
+        });
     },
-    async deleteComment(commentId: number){
-       return axios.delete(this.urls.COMMENT.DELETE + commentId, this.getAuthHeaderConfig())
-         .then(resp => {
-           {return {id: resp.data, type: "Success", message: "Comment has been successfully deleted"}}
-         })
-         .catch((error) => {
-           console.log(error);
-           return { type: "Error", message: "Error at deleting Post. Please try again" };
-         });
+    async deleteComment(commentId: number) {
+      return axios.delete(this.urls.COMMENT.DELETE + commentId, this.getAuthHeaderConfig())
+        .then(resp => {
+          {
+            return { id: resp.data, type: "Success", message: "Comment has been successfully deleted" };
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+          return { type: "Error", message: "Error at deleting Post. Please try again" };
+        });
     },
-    async updateComment(props){
+    async updateComment(props) {
       return axios.put(this.urls.COMMENT.UPDATE, props, this.getAuthHeaderConfig())
         .then(resp => {
-          {return {newBody: resp.data, type: "Success", message: "Comment has been successfully edited"}}
+          {
+            return { newBody: resp.data, type: "Success", message: "Comment has been successfully edited" };
+          }
         })
         .catch((error) => {
           console.log(error);
           return { type: "Error", message: "Error at editing Comment. Please try again" };
         });
     },
-    async updatePost(props){
+    async updatePost(props) {
       return axios.put(this.urls.POST.UPDATE, props, this.getAuthHeaderConfig())
         .then(resp => {
-          {return {newBody: resp.data, type: "Success", message: "Post has been successfully edited"}}
+          {
+            return { newBody: resp.data, type: "Success", message: "Post has been successfully edited" };
+          }
         })
         .catch((error) => {
           console.log(error);

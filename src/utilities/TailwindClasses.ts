@@ -7,12 +7,12 @@ const theme = "amber";
   NAV_LINK_STYLE: `text-amber-50 font-semibold mr-2 px-1 border-b-2 border-amber-700 hover:border-amber-50 transition`,
   //POST
   IMAGE_DIV_STYLE: `mr-4 w-12 h-12 bg-amber-700 rounded-full`,
-  POST_ELEMENT_STYLE: `flex flex-col bg-white w-10/12 lg:w-5/12 py-4 px-6 rounded-md mb-3 shadow-md shadow-amber-200`,
+  POST_ELEMENT_STYLE: `flex flex-col bg-white w-10/12 lg:w-7/12 py-4 px-6 rounded-md mb-3 shadow-md shadow-amber-200`,
   POST_CONTENT_STYLE: `w-full`,
   ACTIONS_STYLE: `flex w-full justify-between border-t-2 border-amber-200 my-2`,
   ACTION_BUTTON_STYLE: `mt-2 flex items-center items-evenly w-3/6 justify-center font-semibold transition text-amber-700 hover:text-amber-500`,
   //ADDPOST
-  ADD_POST_ELEMENT_STYLE: `relative bg-white w-10/12 lg:w-5/12 py-3 px-3 rounded-md mb-3 shadow-md shadow-amber-200 items-center`,
+  ADD_POST_ELEMENT_STYLE: `relative bg-white w-10/12 lg:w-7/12 py-3 px-3 rounded-md mb-3 shadow-md shadow-amber-200 items-center`,
   ADD_POST_BUTTONS_STYLE: `text-amber-700 hover:text-amber-500 transition text-lg h-6 p-2`,
 //COMMENT
   COMMENT_IMAGE_DIV_STYLE: `mr-4 w-10 h-10 bg-amber-700 rounded-full`,

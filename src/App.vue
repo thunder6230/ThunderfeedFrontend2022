@@ -65,27 +65,59 @@ thunderFeedStore.checkUserLoggedIn()
       visibility: visible;
     }
   }
-  .slide-top-enter-active{
-    transition: all 1s ease-out;
 
-  }
-  .slide-top-leave-active{
-    transition: all 0.8s ease-out;
-  }
-  .slide-top-enter-from,
-  .slide-top-enter-to{
-    transform: translateY(-60px);
-    opacity: 0;
-    position: absolute;
-  }
-  .fade-enter-active,
-  .fade-leave-active{
-    transition: all 0.5s ease-out;
-  }
-  .fade-enter-from,
-  .fade-enter-to{
-    opacity: 0;
-    position: absolute;
-  }
+</style>
+<style>
+.list-enter-active,
+.list-leave-active {
+  transition: all 0.5s ease;
+}
+.list-enter-from,
+.list-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
+}
+.slide-in-enter-active,
+.slide-in-leave-active {
+  transition: all 0.3s ease;
+}
+.slide-in-enter-from,
+.slide-in-leave-to {
+  opacity: 0;
+  transform: translateY(-30px);
+  position: absolute;
+}
+.slide-top-enter-active{
+  transition: all 1s ease-out;
 
+}
+.slide-top-leave-active{
+  transition: all 0.8s ease-out;
+}
+.slide-top-enter-from,
+.slide-top-enter-to{
+  transform: translateY(-60px);
+  opacity: 0;
+  position: absolute;
+}
+.fade-enter-active,
+.fade-leave-active{
+  transition: all 0.5s ease-out;
+}
+.fade-enter-from,
+.fade-enter-to{
+  opacity: 0;
+  position: absolute;
+}
+
+.bounce-in-enter-active,
+.bounce-in-leave-active {
+  transition: all 0.5s ease;
+}
+
+.bounce-in-enter-from,
+.bounce-in-leave-to {
+  opacity: 0;
+  transform: scale(1.2);
+}
 </style>
