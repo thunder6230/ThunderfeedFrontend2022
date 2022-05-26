@@ -93,9 +93,9 @@ const handleEditInput = (newBody: string) => {
     <div class="flex relative">
       <Transition name="bounce-in">
         <div class="absolute right-0 top-0 flex" v-if="actionsVisible">
-          <font-awesome-icon icon="edit" class="text-amber-800 hover:text-amber-500 transition ml-2 text-lg"
+          <font-awesome-icon icon="edit" class="text-amber-800 hover:text-amber-500 transition ml-2 text-lg cursor-pointer"
                              @click="isEditActive = true"></font-awesome-icon>
-          <font-awesome-icon icon="circle-minus" class="text-red-500 hover:rotate-180 transition ml-2 text-lg"
+          <font-awesome-icon icon="circle-minus" class="text-red-500 hover:rotate-180 transition ml-2 text-lg cursor-pointer"
                              @click="handleDeletePost()"></font-awesome-icon>
         </div>
 
@@ -112,39 +112,42 @@ const handleEditInput = (newBody: string) => {
                              @postEdited="handleEditInput($event)" @focusout="isEditActive = false" />
           <p class="font-semibold text-amber-900 text-lg" v-else>{{ propsCopy.post.body }}</p>
         </TransitionGroup>
-
-
-        <div class="flex justify-between">
-          <div>{{ propsCopy.post.likes.length }} {{ pluralize("like", propsCopy.post.likes.length) }}</div>
-          <div>{{ propsCopy.post.comments.length }} {{ pluralize("comment", propsCopy.post.likes.length) }}</div>
-        </div>
-        <div :class="TailwindClasses.ACTIONS_STYLE">
-          <button :class="TailwindClasses.ACTION_BUTTON_STYLE"
-                  @click="handleLike(propsCopy.post.id, propsCopy.post.likes)">
-            <font-awesome-icon icon="thumbs-up" class="mr-2 transition-transform duration-500"
-                               :class="{'rotate-180':checkLike(propsCopy.post.likes)} " />
-            Like
-          </button>
-          <button :class="TailwindClasses.ACTION_BUTTON_STYLE" @click="addComment = !addComment">
-            <font-awesome-icon icon="comment" class="mr-2" />
-            Comment
-          </button>
-        </div>
-        <!--        COmments-->
-        <TransitionGroup name="list" v-if="propsCopy.post.comments.length > 0" tag="ul" appear>
-          <CommentComponent v-for="(comment, index) in propsCopy.post.comments" :key="comment.body" :comment="comment"
-                            :index="index" @deletedComment="handleCommentDelete($event)" />
+        <TransitionGroup name="slide-in" tag="div" v-if="propsCopy.post.pictures.length > 0" class="flex flex-wrap">
+          <img v-for="(picture,index) in propsCopy.post.pictures" :key="picture.fileName" :src="`${thunderFeedStore.urls.BASE}/${picture.imgPath}`" class="w-full  object-cover lg:w-3/6 p-2 shadow" style="max-height: 300px" :alt="`Picture ${index+1}`"/>
         </TransitionGroup>
-        <!--      COmmentsENd-->
-      </div>
 
-      <!--      AddComment-->
-    </div>
-    <Transition name="bounce-in">
-      <AddCommentComponent v-if="addComment" @commentAdded="addNewCommentToProps($event)"
-                           :post-id="propsCopy.post.id" />
-    </Transition>
-    <!--      AddComment End-->
+
+  <div class="flex justify-between">
+    <div>{{ propsCopy.post.likes.length }} {{ pluralize("like", propsCopy.post.likes.length) }}</div>
+    <div>{{ propsCopy.post.comments.length }} {{ pluralize("comment", propsCopy.post.likes.length) }}</div>
+  </div>
+  <div :class="TailwindClasses.ACTIONS_STYLE">
+    <button :class="TailwindClasses.ACTION_BUTTON_STYLE"
+            @click="handleLike(propsCopy.post.id, propsCopy.post.likes)">
+      <font-awesome-icon icon="thumbs-up" class="mr-2 transition-transform duration-500"
+                         :class="{'rotate-180':checkLike(propsCopy.post.likes)} " />
+      Like
+    </button>
+    <button :class="TailwindClasses.ACTION_BUTTON_STYLE" @click="addComment = !addComment">
+      <font-awesome-icon icon="comment" class="mr-2" />
+      Comment
+    </button>
+  </div>
+  <!--        COmments-->
+  <TransitionGroup name="list" v-if="propsCopy.post.comments.length > 0" tag="ul" appear>
+    <CommentComponent v-for="(comment, index) in propsCopy.post.comments" :key="comment.body" :comment="comment"
+                      :index="index" @deletedComment="handleCommentDelete($event)" />
+  </TransitionGroup>
+  <!--      COmmentsENd-->
+  </div>
+
+  <!--      AddComment-->
+  </div>
+  <Transition name="bounce-in">
+    <AddCommentComponent v-if="addComment" @commentAdded="addNewCommentToProps($event)"
+                         :post-id="propsCopy.post.id" />
+  </Transition>
+  <!--      AddComment End-->
 
   </li>
 </template>
@@ -171,14 +174,4 @@ const handleEditInput = (newBody: string) => {
   transform: translateX(30px);
 }
 
-.bounce-in-enter-active,
-.bounce-in-leave-active {
-  transition: all 0.5s ease;
-}
-
-.bounce-in-enter-from,
-.bounce-in-leave-to {
-  opacity: 0;
-  transform: scale(1.2);
-}
 </style>

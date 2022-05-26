@@ -26,32 +26,5 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-.fade-enter-active,
-.fade-leave-active{
-  transition: all 0.5s ease-out;
-}
-.fade-enter-from,
-.fade-enter-to{
-  opacity: 0;
-  position: absolute;
-}
-.list-enter-active,
-.list-leave-active {
-  transition: all 0.5s ease;
-}
-.list-enter-from,
-.list-leave-to {
-  opacity: 0;
-  transform: translateX(30px);
-}
-.slide-in-enter-active,
-.slide-in-leave-active {
-  transition: all 0.3s ease;
-}
-.slide-in-enter-from,
-.slide-in-leave-to {
-  opacity: 0;
-  transform: translateY(-30px);
-  position: absolute;
-}
+
 </style>
