@@ -21,7 +21,7 @@ const theme = "amber";
    COMMENT_ACTIONS_STYLE: `flex`,
    COMMENT_ACTION_BUTTON_STYLE: `font-semibold text-amber-900 hover:text-amber-700 transition mr-2 text-sm mt-1`,
   //AUTH MODAL
-  INPUT_STYLE: `placeholder-amber-700 text-lg text-amber-500 focus:outline-none focus:border-amber-500 py-1 px-2 rounded-md border-amber-700 border-2 hover:border-amber-500 transition `,
+  INPUT_STYLE: `w-full placeholder-amber-700 text-lg text-amber-500 focus:outline-none focus:border-amber-500 py-1 px-2 rounded-md border-amber-700 border-2 hover:border-amber-500 transition `,
   BUTTON_STYLE: `w-full bg-amber-50 rounded-md mb-1 font-semibold text-xl py-1 text-amber-700 hover:text-amber-50 hover:bg-amber-700 border-2 border-amber-700 transition`
 };
 export default tailwindClasses
