@@ -2,12 +2,10 @@
 import { useThunderFeedStore } from "@/stores/thunderfeed";
 import { useToastStore } from "@/stores/Toast";
 import { ref } from "vue";
-
+import TailwindClasses from "@/utilities/TailwindClasses";
+import AddPostFileListComponent from "@/components/UserPost/AddPostFileListComponent.vue";
 const thunderFeedStore = useThunderFeedStore();
 const toastStore = useToastStore();
-import TailwindClasses from "@/utilities/TailwindClasses";
-import type { AddPostParams } from "@/models/HelperModels";
-import AddPostFileListComponent from "@/components/UserPost/AddPostFileListComponent.vue";
 
 let formData = new FormData();
 const postBody = ref("");

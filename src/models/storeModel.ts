@@ -13,6 +13,7 @@ export interface Post {
   user: User
   likes?: any
   comments?: any,
+  pictures: any,
   createdAt: string,
   updatedAt: string
 }

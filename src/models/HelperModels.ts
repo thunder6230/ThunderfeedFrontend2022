@@ -55,3 +55,9 @@ export interface AddReplyLikeParams {
   replyId: number,
   userId: number,
 }
+export interface AddReplyParams {
+  userId: number,
+  commentId: number,
+  body: string,
+  file: string | null
+}
