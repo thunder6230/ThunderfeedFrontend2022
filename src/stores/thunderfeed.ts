@@ -86,6 +86,7 @@ export const useThunderFeedStore = defineStore({
     async register(registerData: RegisterModel) {
       return axios.post(this.urls.AUTH.REGISTER, registerData)
         .then(resp => {
+          this.goToLogin()
           return { type: "Success", message: resp.data };
         })
         .catch(error => {

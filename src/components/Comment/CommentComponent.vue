@@ -30,7 +30,6 @@ const addLike = async (commentId: number) => {
     userId: thunderFeedStore.getUserId
   };
   const likeResponse = await thunderFeedStore.addCommentLike(params);
-  console.log(likeResponse);
   propsCopy.comment.likes.push(likeResponse.like);
   toastStore.showToast(likeResponse);
   myLikeId.value = likeResponse.like.id;
@@ -57,7 +56,6 @@ const emit = defineEmits(["deletedComment"]);
 const handleDelete = async () => {
   if (!confirm("Are you sure you want to delete this Post?")) return;
   const deleteResponse = await thunderFeedStore.deleteComment(propsCopy.comment.id);
-  console.log(deleteResponse);
   emit("deletedComment", deleteResponse.id);
   toastStore.showToast(deleteResponse);
 };
