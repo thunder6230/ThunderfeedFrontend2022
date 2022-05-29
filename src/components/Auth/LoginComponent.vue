@@ -26,9 +26,9 @@ const v$ = useVuelidate(
 const sendLogin = async () => {
   const valid = await v$.value.$validate();
   if (!valid) return;
-  const loggedIn = await thunderFeedStore.login(loginData.value);
-  if (loggedIn.type == "Success") thunderFeedStore.closeAuth();
-  return toastStore.showToast(loggedIn);
+  const response = await thunderFeedStore.login(loginData.value);
+  if (response.type == "Success") thunderFeedStore.closeAuth();
+  return toastStore.showToast(response);
 };
 </script>
 
@@ -72,4 +72,8 @@ const sendLogin = async () => {
   </div>
 </template>
 
-<style></style>
+<style scoped>
+.modalContent {
+  position: absolute;
+}
+</style>

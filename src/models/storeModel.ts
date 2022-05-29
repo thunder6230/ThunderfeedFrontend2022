@@ -37,7 +37,7 @@ export interface Auth {
 export interface Urls {
   BASE: string;
   AUTH: AuthUrls;
-  POST: CrudUrls;
+  POST: PostUrls;
   COMMENT: CommentUrls;
   LIKE: LikeUrls;
   REPLY: CrudUrls;
@@ -50,6 +50,15 @@ interface AuthUrls {
 
 interface CrudUrls {
   GET_ALL: string;
+  GET: string;
+  ADD: string;
+  UPDATE: string;
+  DELETE: string;
+}
+
+interface PostUrls {
+  GET_ALL: string;
+  GET_ALL_USER: string;
   GET: string;
   ADD: string;
   UPDATE: string;

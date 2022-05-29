@@ -24,13 +24,10 @@ const params = ref<EditCommentParams>({
 const emit = defineEmits(["commentEdited"]);
 const handleEdit = async () => {
   params.value.body = propsCopy.body;
-  const result = await thunderFeedStore.updateComment(params.value);
-  emit("commentEdited", result.newBody);
-  toastStore.showToast(result);
-};
-const onFileChange = (files: any[]) => {
-  if (!files.length) return;
-  params.value.file = files[0];
+  const response = await thunderFeedStore.updateComment(params.value);
+  if (response == undefined) return;
+  emit("commentEdited", response.newBody);
+  toastStore.showToast(response);
 };
 const input = ref<HTMLInputElement>();
 onMounted(() => {

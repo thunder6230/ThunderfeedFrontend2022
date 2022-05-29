@@ -22,10 +22,11 @@ const handleSubmit = async () => {
   formData.set("userId", thunderFeedStore.getUserId.toString());
   formData.set("postId", props.postId.toString());
   formData.set("body", commentBody.value);
-  const result = await thunderFeedStore.addComment(formData);
-  toastStore.showToast(result);
-  if (result.type == "Success") {
-    emit("commentAdded", result.comment);
+  const response = await thunderFeedStore.addComment(formData);
+  if (response == undefined) return;
+  toastStore.showToast(response);
+  if (response.type == "Success") {
+    emit("commentAdded", response.comment);
     formData = new FormData();
     commentBody.value = "";
     files.value = [];

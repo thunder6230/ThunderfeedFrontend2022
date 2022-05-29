@@ -1,13 +1,13 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import axios from "axios";
+import App from "./App.vue";
+import router from "./router";
+import "./index.css";
 
 const axiosInstance = axios.create({
   withCredentials: true,
 });
-import App from "./App.vue";
-import router from "./router";
-import "./index.css";
 
 import FontAwesomeIcon from "@/utilities/fontawsome";
 

@@ -139,4 +139,8 @@ const capitalizedName = (name: string) => {
   </div>
 </template>
 
-<style></style>
+<style scoped>
+.modalContent {
+  position: absolute;
+}
+</style>

@@ -5,6 +5,8 @@ import ToastMessageComponent from "@/components/Helpers/ToastMessageComponent.vu
 import tailwindClasses from "@/utilities/TailwindClasses";
 import { useToastStore } from "@/stores/Toast";
 import { useThunderFeedStore } from "@/stores/thunderfeed";
+import "animate.css";
+
 const thunderFeedStore = useThunderFeedStore();
 const toastStore = useToastStore();
 const handleLogout = async () => {
@@ -27,42 +29,40 @@ thunderFeedStore.checkUserLoggedIn();
         />
 
         <nav>
-          <TransitionGroup name="fade">
+          <TransitionGroup
+            enter-active-class="animate__animated animate__rollIn"
+            leave-active-class="animate__animated animate__rollOut"
+          >
             <RouterLink to="/" :class="NAV_LINK_STYLE" :key="1"
-              >Posts</RouterLink
-            >
+              >Posts
+            </RouterLink>
             <RouterLink to="/about" :class="NAV_LINK_STYLE" :key="2"
-              >About</RouterLink
-            >
+              >About
+            </RouterLink>
+
+            <RouterLink to="/Future" :class="NAV_LINK_STYLE" :key="4"
+              >Future Plans
+            </RouterLink>
             <RouterLink
-              to="/"
+              to="/Friends"
               :class="NAV_LINK_STYLE"
               v-if="thunderFeedStore.userLoggedIn"
               :key="3"
-              >Friends</RouterLink
-            >
-            <RouterLink
-              to="/"
-              :class="NAV_LINK_STYLE"
-              v-if="thunderFeedStore.userLoggedIn"
-              :key="4"
-              >Chat</RouterLink
-            >
+              >Friends
+            </RouterLink>
           </TransitionGroup>
         </nav>
       </div>
       <div class="right">
-        <TransitionGroup name="fade">
+        <TransitionGroup name="slide-in">
           <nav v-if="!thunderFeedStore.userLoggedIn" :key="1">
             <button
-              to="/"
               :class="NAV_LINK_STYLE"
               @click="thunderFeedStore.openAuthRegister()"
             >
               Register
             </button>
             <button
-              to="/"
               :class="NAV_LINK_STYLE"
               @click="thunderFeedStore.openAuthLogin()"
             >
@@ -70,7 +70,11 @@ thunderFeedStore.checkUserLoggedIn();
             </button>
           </nav>
           <nav v-else :key="2">
-            <RouterLink to="/" :class="NAV_LINK_STYLE">User</RouterLink>
+            <RouterLink
+              :to="`/profile/${thunderFeedStore.getUserId}`"
+              :class="NAV_LINK_STYLE"
+              >My Profile</RouterLink
+            >
             <button @click="handleLogout()" :class="NAV_LINK_STYLE">
               Logout
             </button>
@@ -79,25 +83,32 @@ thunderFeedStore.checkUserLoggedIn();
       </div>
     </section>
   </header>
-  <RouterView class="pt-24" />
-  <AuthComponent
-    class="authModal"
-    :class="{ active: thunderFeedStore.auth.isAuthOpen }"
-  />
+  <RouterView v-slot:="{ Component }">
+    <Transition
+      appear
+      enter-active-class="animate__animated animate__fadeInRight"
+      leave-active-class="animate__animated animate__fadeOutLeft"
+    >
+      <Component :is="Component" class="py-24 absolute w-full" />
+    </Transition>
+  </RouterView>
+
+  <Transition
+    appear
+    enter-active-class="animate__animated animate__fadeIn"
+    leave-active-class="animate__animated animate__fadeOut"
+  >
+    <AuthComponent class="authModal" v-if="thunderFeedStore.auth.isAuthOpen" />
+  </Transition>
+
   <Transition name="slide-top">
     <ToastMessageComponent v-if="toastStore.isActive" />
   </Transition>
 </template>
 
 <style lang="scss" scoped>
-.authModal {
-  opacity: 0;
-  visibility: hidden;
-  transition: 0.3s all ease-in;
-  &.active {
-    opacity: 1;
-    visibility: visible;
-  }
+.router-link-exact-active {
+  border-bottom: 2px solid white;
 }
 </style>
 <style>
@@ -105,37 +116,45 @@ thunderFeedStore.checkUserLoggedIn();
 .list-leave-active {
   transition: all 0.5s ease;
 }
+
 .list-enter-from,
 .list-leave-to {
   opacity: 0;
   transform: translateX(30px);
 }
+
 .slide-in-enter-active,
 .slide-in-leave-active {
   transition: all 0.3s ease;
 }
+
 .slide-in-enter-from,
 .slide-in-leave-to {
   opacity: 0;
   transform: translateY(-30px);
   position: absolute;
 }
+
 .slide-top-enter-active {
   transition: all 1s ease-out;
 }
+
 .slide-top-leave-active {
   transition: all 0.8s ease-out;
 }
+
 .slide-top-enter-from,
 .slide-top-enter-to {
   transform: translateY(-60px);
   opacity: 0;
   position: absolute;
 }
+
 .fade-enter-active,
 .fade-leave-active {
   transition: all 0.5s ease-out;
 }
+
 .fade-enter-from,
 .fade-enter-to {
   opacity: 0;

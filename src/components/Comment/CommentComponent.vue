@@ -28,19 +28,21 @@ const addLike = async (commentId: number) => {
     commentId: commentId,
     userId: thunderFeedStore.getUserId,
   };
-  const likeResponse = await thunderFeedStore.addCommentLike(params);
-  propsCopy.comment.likes.push(likeResponse.like);
-  toastStore.showToast(likeResponse);
-  myLikeId.value = likeResponse.like.id;
+  const response = await thunderFeedStore.addCommentLike(params);
+  if (response == undefined) return;
+  propsCopy.comment.likes.push(response.like);
+  toastStore.showToast(response);
+  myLikeId.value = response.like.id;
 };
 const removeLike = async () => {
-  const likeResponse = await thunderFeedStore.removeLike(myLikeId.value);
-  if (likeResponse.id && likeResponse.id > 0) {
+  const response = await thunderFeedStore.removeLike(myLikeId.value);
+  if (response == undefined) return;
+  if (response.id) {
     propsCopy.comment.likes = Object.values(propsCopy.comment.likes).filter(
-      (like: any) => like.id != likeResponse.id
+      (like: any) => like.id != response.id
     );
   }
-  toastStore.showToast(likeResponse);
+  toastStore.showToast(response);
 };
 
 const myLikeId = ref<number>(-1);
@@ -56,11 +58,10 @@ const checkLike = (likes: Array<any>) => {
 const emit = defineEmits(["deletedComment"]);
 const handleDelete = async () => {
   if (!confirm("Are you sure you want to delete this Post?")) return;
-  const deleteResponse = await thunderFeedStore.deleteComment(
-    propsCopy.comment.id
-  );
-  emit("deletedComment", deleteResponse.id);
-  toastStore.showToast(deleteResponse);
+  const response = await thunderFeedStore.deleteComment(propsCopy.comment.id);
+  if (response == undefined) return;
+  emit("deletedComment", response.id);
+  toastStore.showToast(response);
 };
 const isEditActive = ref(false);
 const isAddReplyActive = ref(false);
@@ -80,12 +81,15 @@ const handleReplyDelete = (replyId: number) => {
 </script>
 <template>
   <li class="flex mb-2">
-    <RouterLink to="/">
+    <RouterLink :to="`/profile/${propsCopy.comment.user.id}`">
       <div :class="TailwindClasses.COMMENT_IMAGE_DIV_STYLE"></div>
     </RouterLink>
     <div class="flex flex-col w-11/12">
       <div :class="TailwindClasses.COMMENT_CONTENT_STYLE">
-        <RouterLink to="/" class="font-semibold text-black m-0 text-sm">
+        <RouterLink
+          :to="`/profile/${propsCopy.comment.user.id}`"
+          class="font-semibold text-black m-0 text-sm"
+        >
           {{
             getFullName(
               propsCopy.comment.user.firstName,

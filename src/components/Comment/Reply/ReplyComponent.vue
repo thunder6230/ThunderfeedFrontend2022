@@ -27,20 +27,21 @@ const addLike = async (replyId: number) => {
     replyId: replyId,
     userId: thunderFeedStore.getUserId,
   };
-  const likeResponse = await thunderFeedStore.addReplyLike(params);
-  console.log(likeResponse);
-  propsCopy.reply.likes.push(likeResponse.like);
-  toastStore.showToast(likeResponse);
-  myLikeId.value = likeResponse.like.id;
+  const response = await thunderFeedStore.addReplyLike(params);
+  if (response == undefined) return;
+  propsCopy.reply.likes.push(response.like);
+  toastStore.showToast(response);
+  myLikeId.value = response.like.id;
 };
 const removeLike = async () => {
-  const likeResponse = await thunderFeedStore.removeLike(myLikeId.value);
-  if (likeResponse.id && likeResponse.id > 0) {
-    propsCopy.reply.likes = propsCopy.reply.likes.filter((like: any) => {
-      like.id != likeResponse.id;
-    });
+  const response = await thunderFeedStore.removeLike(myLikeId.value);
+  if (response == undefined) return;
+  if (response.id) {
+    propsCopy.reply.likes = propsCopy.reply.likes.filter(
+      (like: any) => like.id != response.id
+    );
   }
-  toastStore.showToast(likeResponse);
+  toastStore.showToast(response);
 };
 
 const myLikeId = ref<number>(-1);
@@ -55,9 +56,10 @@ const checkLike = (likes: Array<any>) => {
 const emit = defineEmits(["deletedReply", "addReply"]);
 const handleDelete = async () => {
   if (!confirm("Are you sure you want to delete this Post?")) return;
-  const deleteResponse = await thunderFeedStore.deleteReply(propsCopy.reply.id);
-  emit("deletedReply", deleteResponse.id);
-  toastStore.showToast(deleteResponse);
+  const response = await thunderFeedStore.deleteReply(propsCopy.reply.id);
+  if (response == undefined) return;
+  emit("deletedReply", response.id);
+  toastStore.showToast(response);
 };
 const isEditActive = ref(false);
 const handleEditInput = (newBody: string) => {
@@ -67,11 +69,14 @@ const handleEditInput = (newBody: string) => {
 </script>
 <template>
   <li class="flex my-2">
-    <RouterLink to="/">
+    <RouterLink :to="`/profile/${propsCopy.reply.user.id}`">
       <div :class="TailwindClasses.COMMENT_IMAGE_DIV_STYLE"></div>
     </RouterLink>
     <div :class="TailwindClasses.REPLY_CONTENT_STYLE">
-      <RouterLink to="/" class="font-semibold text-black m-0 text-sm">
+      <RouterLink
+        :to="`/profile/${propsCopy.reply.user.id}`"
+        class="font-semibold text-black m-0 text-sm"
+      >
         {{
           getFullName(
             propsCopy.reply.user.firstName,

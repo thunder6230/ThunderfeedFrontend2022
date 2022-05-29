@@ -29,6 +29,7 @@ export const useThunderFeedStore = defineStore({
         },
         POST: {
           GET_ALL: "/UserPost/getAll",
+          GET_ALL_USER: "/UserPost/getUserPosts",
           GET: "/UserPost/getPost/",
           ADD: "/UserPost/AddPost",
           UPDATE: "/UserPost/UpdatePost",
@@ -99,6 +100,7 @@ export const useThunderFeedStore = defineStore({
           return { type: "Success", message: "Login Successful" };
         })
         .catch((error) => {
+          console.log(error);
           return { type: "Error", message: error.response.data };
         });
     },
@@ -117,6 +119,7 @@ export const useThunderFeedStore = defineStore({
           return { type: "Success", message: resp.data };
         })
         .catch((error) => {
+          console.log(error);
           return { type: "Error", message: error.response.data };
         });
     },
@@ -160,8 +163,23 @@ export const useThunderFeedStore = defineStore({
       return { type: "Success", message: "Logout Successful" };
     },
     async getPosts(): Promise<CRUDResponse> {
+      const url = this.urls.POST.GET_ALL;
       return axios
-        .get(this.urls.POST.GET_ALL)
+        .get(url)
+        .then((resp) => {
+          console.log(resp.data);
+          this.$patch((state) => (state.posts = resp.data));
+          return { type: "Success", message: "Posts has been loaded" };
+        })
+        .catch((error) => {
+          console.log(error);
+          return { type: "Error", message: "error.response.data" };
+        });
+    },
+    async getUserPosts(userId: string): Promise<CRUDResponse> {
+      const url = `${this.urls.POST.GET_ALL_USER}/${userId}`;
+      return axios
+        .get(url)
         .then((resp) => {
           console.log(resp.data);
           this.$patch((state) => (state.posts = resp.data));
@@ -171,7 +189,8 @@ export const useThunderFeedStore = defineStore({
           return { type: "Error", message: "error.response.data" };
         });
     },
-    async addPost(params: FormData): Promise<CRUDResponse> {
+    async addPost(params: FormData): Promise<void | CRUDResponse> {
+      if (!this.userLoggedIn) return this.openAuthLogin();
       return axios
         .post(
           this.urls.POST.ADD,
@@ -206,8 +225,8 @@ export const useThunderFeedStore = defineStore({
         },
       };
     },
-    async addPostLike(params: AddPostLikeParams): Promise<CRUDResponse> {
-      console.log(this.urls.LIKE.ADD_POST);
+    async addPostLike(params: AddPostLikeParams): Promise<void | CRUDResponse> {
+      if (!this.userLoggedIn) return this.openAuthLogin();
       return axios
         .post(this.urls.LIKE.ADD_POST, params, this.getAuthHeaderConfig())
         .then((resp) => {
@@ -232,7 +251,10 @@ export const useThunderFeedStore = defineStore({
           };
         });
     },
-    async addCommentLike(params: AddCommentLikeParams): Promise<CRUDResponse> {
+    async addCommentLike(
+      params: AddCommentLikeParams
+    ): Promise<void | CRUDResponse> {
+      if (!this.userLoggedIn) return this.openAuthLogin();
       return axios
         .post(this.urls.LIKE.ADD_COMMENT, params, this.getAuthHeaderConfig())
         .then((resp) => {
@@ -256,10 +278,11 @@ export const useThunderFeedStore = defineStore({
     async getComment(id: number) {
       return axios.get(this.urls.COMMENT.GET + id).then((resp) => resp.data);
     },
-    async removeLike(likeId: number): Promise<CRUDResponse> {
+    async removeLike(likeId: number): Promise<void | CRUDResponse> {
+      if (!this.userLoggedIn) return this.openAuthLogin();
       return axios
         .delete(this.urls.LIKE.DELETE + likeId, this.getAuthHeaderConfig())
-        .then((resp) => {
+        .then(() => {
           return {
             type: "Success",
             message: "Like has been deleted",
@@ -274,7 +297,8 @@ export const useThunderFeedStore = defineStore({
           };
         });
     },
-    async addComment(params: FormData): Promise<CRUDResponse> {
+    async addComment(params: FormData): Promise<void | CRUDResponse> {
+      if (!this.userLoggedIn) return this.openAuthLogin();
       return axios
         .post(
           this.urls.COMMENT.ADD,
@@ -296,7 +320,8 @@ export const useThunderFeedStore = defineStore({
           };
         });
     },
-    async deletePost(postId: number): Promise<CRUDResponse> {
+    async deletePost(postId: number): Promise<void | CRUDResponse> {
+      if (!this.userLoggedIn) return this.openAuthLogin();
       return axios
         .delete(this.urls.POST.DELETE + postId, this.getAuthHeaderConfig())
         .then((resp) => {
@@ -316,7 +341,8 @@ export const useThunderFeedStore = defineStore({
           };
         });
     },
-    async deleteComment(commentId: number): Promise<CRUDResponse> {
+    async deleteComment(commentId: number): Promise<void | CRUDResponse> {
+      if (!this.userLoggedIn) return this.openAuthLogin();
       return axios
         .delete(
           this.urls.COMMENT.DELETE + commentId,
@@ -339,7 +365,10 @@ export const useThunderFeedStore = defineStore({
           };
         });
     },
-    async updateComment(props: EditCommentParams): Promise<CRUDResponse> {
+    async updateComment(
+      props: EditCommentParams
+    ): Promise<void | CRUDResponse> {
+      if (!this.userLoggedIn) return this.openAuthLogin();
       return axios
         .put(this.urls.COMMENT.UPDATE, props, this.getAuthHeaderConfig())
         .then((resp) => {
@@ -359,7 +388,8 @@ export const useThunderFeedStore = defineStore({
           };
         });
     },
-    async updatePost(props: EditPostparams): Promise<CRUDResponse> {
+    async updatePost(props: EditPostparams): Promise<void | CRUDResponse> {
+      if (!this.userLoggedIn) return this.openAuthLogin();
       return axios
         .put(this.urls.POST.UPDATE, props, this.getAuthHeaderConfig())
         .then((resp) => {
@@ -379,7 +409,8 @@ export const useThunderFeedStore = defineStore({
           };
         });
     },
-    async addReply(params: AddReplyParams): Promise<CRUDResponse> {
+    async addReply(params: AddReplyParams): Promise<void | CRUDResponse> {
+      if (!this.userLoggedIn) return this.openAuthLogin();
       return axios
         .post(this.urls.REPLY.ADD, params, this.getAuthHeaderConfig())
         .then((resp) => {
@@ -397,7 +428,8 @@ export const useThunderFeedStore = defineStore({
           };
         });
     },
-    async deleteReply(replyId: number): Promise<CRUDResponse> {
+    async deleteReply(replyId: number): Promise<void | CRUDResponse> {
+      if (!this.userLoggedIn) return this.openAuthLogin();
       return axios
         .delete(this.urls.REPLY.DELETE + replyId, this.getAuthHeaderConfig())
         .then((resp) => {
@@ -417,7 +449,10 @@ export const useThunderFeedStore = defineStore({
           };
         });
     },
-    async addReplyLike(params: AddReplyLikeParams): Promise<CRUDResponse> {
+    async addReplyLike(
+      params: AddReplyLikeParams
+    ): Promise<void | CRUDResponse> {
+      if (!this.userLoggedIn) return this.openAuthLogin();
       return axios
         .post(this.urls.LIKE.ADD_REPLY, params, this.getAuthHeaderConfig())
         .then((resp) => {
@@ -435,7 +470,8 @@ export const useThunderFeedStore = defineStore({
           };
         });
     },
-    async updateReply(props: EditReplyParams): Promise<CRUDResponse> {
+    async updateReply(props: EditReplyParams): Promise<void | CRUDResponse> {
+      if (!this.userLoggedIn) return this.openAuthLogin();
       return axios
         .put(this.urls.REPLY.UPDATE, props, this.getAuthHeaderConfig())
         .then((resp) => {

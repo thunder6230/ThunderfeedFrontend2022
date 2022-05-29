@@ -8,7 +8,6 @@ import { ref } from "vue";
 import CommentComponent from "@/components/Comment/CommentComponent.vue";
 import AddCommentComponent from "@/components/Comment/AddCommentComponent.vue";
 import EditPostComponent from "@/components/UserPost/EditPostComponent.vue";
-import type { CRUDResponse } from "@/models/HelperModels";
 
 const props = defineProps<{
   post: Post;
@@ -31,21 +30,21 @@ const addLike = async (postId: number) => {
     postId: postId,
     userId: thunderFeedStore.getUserId,
   };
-  const likeResponse = await thunderFeedStore.addPostLike(params);
-  toastStore.showToast(likeResponse);
-  myLikeId.value = likeResponse.id;
+  const response = await thunderFeedStore.addPostLike(params);
+  if (response == undefined) return;
+  toastStore.showToast(response);
+  myLikeId.value = response.id;
 };
 const removeLike = async () => {
   if (myLikeId.value == null) return;
-  const likeResponse: CRUDResponse = await thunderFeedStore.removeLike(
-    myLikeId.value
-  );
-  if (likeResponse.id && likeResponse.id > 0) {
+  const response = await thunderFeedStore.removeLike(myLikeId.value);
+  if (response == undefined) return;
+  if (response.id) {
     propsCopy.post.likes = Object.values(propsCopy.post.likes).filter(
-      (like: any) => like.id != likeResponse.id
+      (like: any) => like.id != response.id
     );
   }
-  toastStore.showToast(likeResponse);
+  toastStore.showToast(response);
 };
 const pluralize = (word: string, count: number) => {
   switch (word) {
@@ -77,8 +76,9 @@ const handleMouseEnter = () => {
 };
 const handleDeletePost = async () => {
   if (!confirm("Are you sure you want to delete this Post?")) return;
-  const deleteResponse = await thunderFeedStore.deletePost(propsCopy.post.id);
-  toastStore.showToast(deleteResponse);
+  const response = await thunderFeedStore.deletePost(propsCopy.post.id);
+  if (response == undefined) return;
+  toastStore.showToast(response);
 };
 const handleCommentDelete = (commentId: number) => {
   console.log(propsCopy.post.comments);
@@ -114,11 +114,14 @@ const handleEditInput = (newBody: string) => {
           ></font-awesome-icon>
         </div>
       </Transition>
-      <RouterLink to="/">
+      <RouterLink :to="`/profile/${propsCopy.post.user.id}`">
         <div :class="TailwindClasses.IMAGE_DIV_STYLE"></div>
       </RouterLink>
       <div :class="TailwindClasses.POST_CONTENT_STYLE">
-        <RouterLink to="/" class="font-semibold text-amber-900">
+        <RouterLink
+          :to="`/profile/${propsCopy.post.user.id}`"
+          class="font-semibold text-amber-900"
+        >
           {{
             getFullName(
               propsCopy.post.user.firstName,

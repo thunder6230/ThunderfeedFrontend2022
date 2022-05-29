@@ -14,9 +14,10 @@ const files = ref<string[]>([]);
 const handleSubmit = async () => {
   formData.set("userId", thunderFeedStore.getUserId.toString());
   formData.set("body", postBody.value);
-  const result = await thunderFeedStore.addPost(formData);
-  toastStore.showToast(result);
-  if (result.type == "Success") {
+  const response = await thunderFeedStore.addPost(formData);
+  if (response == undefined) return;
+  toastStore.showToast(response);
+  if (response.type == "Success") {
     formData = new FormData();
     postBody.value = "";
     files.value = [];
