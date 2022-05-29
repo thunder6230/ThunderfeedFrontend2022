@@ -3,9 +3,7 @@ import { useThunderFeedStore } from "@/stores/thunderfeed";
 import { useToastStore } from "@/stores/Toast";
 import TailwindClasses from "@/utilities/TailwindClasses";
 import { onMounted, ref } from "vue";
-import type {
-  EditCommentParams,
-} from "@/models/HelperModels";
+import type { EditCommentParams } from "@/models/HelperModels";
 
 const props = defineProps<{
   commentId: any;

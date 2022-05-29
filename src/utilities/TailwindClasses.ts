@@ -1,4 +1,3 @@
-
 const tailwindClasses: TailwindClassesModel = {
   //Header
   HEADER_STYLE: `flex w-full justify-between items-center bg-amber-700 px-4 py-2 h-12 fixed top-0 z-50`,

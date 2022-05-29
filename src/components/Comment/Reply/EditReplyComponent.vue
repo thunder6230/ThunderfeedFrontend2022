@@ -2,9 +2,7 @@
 import { useThunderFeedStore } from "@/stores/thunderfeed";
 import { useToastStore } from "@/stores/Toast";
 import { onMounted, ref } from "vue";
-import type {
-  EditReplyParams,
-} from "@/models/HelperModels";
+import type { EditReplyParams } from "@/models/HelperModels";
 import TailwindClasses from "@/utilities/TailwindClasses";
 const thunderFeedStore = useThunderFeedStore();
 const toastStore = useToastStore();
