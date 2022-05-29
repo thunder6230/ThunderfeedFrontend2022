@@ -75,16 +75,15 @@ export const useThunderFeedStore = defineStore({
   actions: {
     // Auth Actions -- maybe separate in different store later
     async checkUserLoggedIn() {
-      const userLoggedIn = sessionStorage.getItem("userLoggedIn");
+      const userLoggedIn = localStorage.getItem("userLoggedIn");
       if (userLoggedIn == undefined) return;
       const userData = this.parseJwt(userLoggedIn);
       if (Date.now() >= userData.exp * 1000)
-        return sessionStorage.removeItem("userLoggedIn");
+        return localStorage.removeItem("userLoggedIn");
       this.$patch((state) => {
         state.userLoggedIn = true;
         state.userToken = userLoggedIn;
         state.userData = this.parseJwt(userLoggedIn);
-        console.log(state.userData);
       });
     },
     async login(loginData: LoginModel) {
@@ -95,7 +94,7 @@ export const useThunderFeedStore = defineStore({
             state.userLoggedIn = true;
             state.userToken = resp.data;
             state.userData = this.parseJwt(resp.data);
-            sessionStorage.setItem("userLoggedIn", resp.data);
+            localStorage.setItem("userLoggedIn", resp.data);
           });
           return { type: "Success", message: "Login Successful" };
         })
@@ -158,7 +157,7 @@ export const useThunderFeedStore = defineStore({
       this.$patch((state) => {
         state.userLoggedIn = false;
         state.userToken = "";
-        sessionStorage.removeItem("userLoggedIn");
+        localStorage.removeItem("userLoggedIn");
       });
       return { type: "Success", message: "Logout Successful" };
     },
