@@ -166,7 +166,6 @@ export const useThunderFeedStore = defineStore({
       return axios
         .get(url)
         .then((resp) => {
-          console.log(resp.data);
           this.$patch((state) => (state.posts = resp.data));
           return { type: "Success", message: "Posts has been loaded" };
         })
@@ -180,7 +179,6 @@ export const useThunderFeedStore = defineStore({
       return axios
         .get(url)
         .then((resp) => {
-          console.log(resp.data);
           this.$patch((state) => (state.posts = resp.data));
           return { type: "Success", message: "Posts has been loaded" };
         })

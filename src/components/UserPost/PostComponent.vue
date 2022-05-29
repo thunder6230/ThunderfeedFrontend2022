@@ -81,7 +81,6 @@ const handleDeletePost = async () => {
   toastStore.showToast(response);
 };
 const handleCommentDelete = (commentId: number) => {
-  console.log(propsCopy.post.comments);
   propsCopy.post.comments = propsCopy.post.comments.filter(
     (comment: any) => comment.id != commentId
   );

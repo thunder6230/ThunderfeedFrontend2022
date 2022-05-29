@@ -52,7 +52,6 @@ const checkLike = (likes: Array<any>) => {
   );
   if (count.length == 0) return false;
   myLikeId.value = count[0].id;
-  console.log(myLikeId.value);
   return true;
 };
 const emit = defineEmits(["deletedComment"]);

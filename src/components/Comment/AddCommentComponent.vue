@@ -51,7 +51,6 @@ const handleDeleteFile = (indexToDelete: number) => {
   const filteredFormData = new FormData();
   formDataFiles.forEach((file) => {
     if (file instanceof File) {
-      console.log(file.name);
       filteredFormData.append("file", file, file.name);
     }
   });
