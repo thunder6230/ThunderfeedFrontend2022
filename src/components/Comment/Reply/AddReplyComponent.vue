@@ -23,13 +23,10 @@ const params = ref<EditCommentParams>({
   file: null,
 });
 const handleSubmit = async () => {
-  const result = await thunderFeedStore.addReply(params.value);
-  emit("replyAdded", result.reply);
-  toastStore.showToast(result);
-};
-const onFileChange = (files: any[]) => {
-  if (!files.length) return;
-  params.value.file = files[0];
+  const response = await thunderFeedStore.addReply(params.value);
+  if (response == undefined) return;
+  emit("replyAdded", response.reply);
+  toastStore.showToast(response);
 };
 </script>
 <template>

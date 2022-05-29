@@ -4,10 +4,13 @@ import { useToastStore } from "@/stores/Toast";
 import { onMounted } from "vue";
 import PostComponent from "@/components/UserPost/PostComponent.vue";
 import AddPostComponent from "@/components/UserPost/AddPostComponent.vue";
+import { useRoute } from "vue-router";
 const thunderFeedStore = useThunderFeedStore();
 const toastStore = useToastStore();
+const route = useRoute();
 onMounted(async () => {
-  const response = await thunderFeedStore.getPosts();
+  const userId = route.params.id.toString();
+  const response = await thunderFeedStore.getUserPosts(userId);
   toastStore.showToast(response);
 });
 </script>

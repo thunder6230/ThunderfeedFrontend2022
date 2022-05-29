@@ -10,13 +10,20 @@ const thunderFeedStore = useThunderFeedStore();
     class="bg-black bg-opacity-50 w-full h-full flex justify-center items-center fixed top-0 z-6000"
     @click="thunderFeedStore.closeAuth()"
   >
-    <TransitionGroup name="list-up">
-      <LoginComponent v-if="thunderFeedStore.auth.isLoginActive" :key="1" />
-      <RegisterComponent
-        v-if="thunderFeedStore.auth.isRegisterActive"
-        :key="2"
+    <Transition
+      enter-active-class="animate__animated animate__bounceIn"
+      leave-active-class="animate__animated animate__bounceOut"
+      mode="out-in"
+      appear
+    >
+      <Component
+        :is="
+          thunderFeedStore.auth.isRegisterActive
+            ? RegisterComponent
+            : LoginComponent
+        "
       />
-    </TransitionGroup>
+    </Transition>
   </div>
 </template>
 
