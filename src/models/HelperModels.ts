@@ -1,63 +1,73 @@
-export interface ToastStoreModel{
-  isActive: boolean,
-  message: string,
-  type: string,
-  Themes: Array<ThemeModel>
+export interface ToastStoreModel {
+  isActive: boolean;
+  message: string;
+  type: string;
+  Themes: Array<ThemeModel>;
 }
 
-export interface ToastModel{
-  type: string,
-  message: string
+export interface ToastModel {
+  type: string;
+  message: string;
 }
 export interface ThemeModel {
-  Type: string,
-  Icon: string,
-  Color: string
+  Type: string;
+  Icon: string;
+  Color: string;
 }
 export interface AddPostParams {
-  userId: number,
-  body: string,
-  files: Array<File>
+  userId: number;
+  body: string;
+  files: Array<File>;
 }
 export interface AddCommentParams {
-  userId: number,
-  postId: number,
-  body: string,
-  file: string | null
+  userId: number;
+  postId: number;
+  body: string;
+  file: string | null;
 }
 export interface EditCommentParams {
-  userId: number,
-  commentId: number,
-  body: string,
-  file: string | null
+  userId: number;
+  commentId: number;
+  body: string;
+  file: string | null;
 }
 export interface EditReplyParams {
-  userId: number,
-  replyId: number,
-  body: string,
-  file: string | null
+  userId: number;
+  replyId: number;
+  body: string;
+  file: string | null;
 }
 export interface EditPostparams {
-  userId: number,
-  postId: number,
-  body: string,
-  file: string | null
+  userId: number;
+  postId: number;
+  body: string;
+  file: string | null;
 }
 export interface AddPostLikeParams {
-  postId: number,
-  userId: number,
+  postId: number;
+  userId: number;
 }
 export interface AddCommentLikeParams {
-  commentId: number,
-  userId: number,
+  commentId: number;
+  userId: number;
 }
 export interface AddReplyLikeParams {
-  replyId: number,
-  userId: number,
+  replyId: number;
+  userId: number;
 }
 export interface AddReplyParams {
-  userId: number,
-  commentId: number,
-  body: string,
-  file: string | null
+  userId: number;
+  commentId: number;
+  body: string;
+  file: string | null;
+}
+
+export interface CRUDResponse {
+  message: string;
+  type: string;
+  id?: number;
+  comment?: any;
+  like?: any;
+  reply?: any;
+  newBody?: string;
 }

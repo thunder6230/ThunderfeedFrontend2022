@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, reactive, ref, toRefs } from "vue";
+import { ref } from "vue";
 import { useThunderFeedStore } from "@/stores/thunderfeed";
 import type { LoginModel } from "@/models/AuthModels";
 import { useToastStore } from "@/stores/Toast";
@@ -13,12 +13,15 @@ const toastStore = useToastStore();
 const loginData = ref<LoginModel>({
   email: "",
   password: "",
-  rememberMe: false
+  rememberMe: false,
 });
-const v$ = useVuelidate({
-  email: { required, email, minLength: minLength(6), $autoDirty: true },
-  password: { required, $autoDirty: true }
-}, loginData);
+const v$ = useVuelidate(
+  {
+    email: { required, email, minLength: minLength(6), $autoDirty: true },
+    password: { required, $autoDirty: true },
+  },
+  loginData
+);
 
 const sendLogin = async () => {
   const valid = await v$.value.$validate();
@@ -26,30 +29,47 @@ const sendLogin = async () => {
   const loggedIn = await thunderFeedStore.login(loginData.value);
   if (loggedIn.type == "Success") thunderFeedStore.closeAuth();
   return toastStore.showToast(loggedIn);
-
 };
 </script>
 
 <template>
-  <div @click.stop class="modalContent bg-amber-50 w-96 rounded-md shadow-md shadow-amber-400">
+  <div
+    @click.stop
+    class="modalContent bg-amber-50 w-96 rounded-md shadow-md shadow-amber-400"
+  >
     <form class="flex flex-col px-6 py-4" @submit.prevent="sendLogin()">
-      <h3 class="font-semibold text-3xl text-center mb-3 text-amber-700">Login</h3>
+      <h3 class="font-semibold text-3xl text-center mb-3 text-amber-700">
+        Login
+      </h3>
 
-      <InputWithErrorMessages @newInput="loginData.email = $event" :errors="v$.email.$errors" placeholder="Email"/>
-      <InputWithErrorMessages @newInput="loginData.password = $event" :errors="v$.password.$errors" placeholder="Password" type="password"/>
+      <InputWithErrorMessages
+        @newInput="loginData.email = $event"
+        :errors="v$.email.$errors"
+        placeholder="Email"
+      />
+      <InputWithErrorMessages
+        @newInput="loginData.password = $event"
+        :errors="v$.password.$errors"
+        placeholder="Password"
+        type="password"
+      />
       <label for="" class="mb-3 text-amber-700 font-semibold">
-        <input type="checkbox" name="" id=""
-               class="mr-2 border-2 text-amber-700"
-               v-model="loginData.rememberMe">Remember me</label>
-      <button type="submit" :class="TailwindClasses.BUTTON_STYLE"
-      >Login
-      </button>
-      <small @click="thunderFeedStore.goToRegister()" class="cursor-pointer text-center text-amber-700 font-semibold">Don't
-        have an Account? Click here!</small>
+        <input
+          type="checkbox"
+          name=""
+          id=""
+          class="mr-2 border-2 text-amber-700"
+          v-model="loginData.rememberMe"
+        />Remember me</label
+      >
+      <button type="submit" :class="TailwindClasses.BUTTON_STYLE">Login</button>
+      <small
+        @click="thunderFeedStore.goToRegister()"
+        class="cursor-pointer text-center text-amber-700 font-semibold"
+        >Don't have an Account? Click here!</small
+      >
     </form>
   </div>
 </template>
 
-<style>
-
-</style>
+<style></style>
