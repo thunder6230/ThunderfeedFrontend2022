@@ -19,7 +19,7 @@ const getFullName = (fname: string, lname: string): string => {
 const handleLike = async (replyId: number, replyLikes: Array<any>) => {
   console.log(replyLikes);
   const iLiked = checkLike(replyLikes);
-  if (iLiked) return removeLike(replyId);
+  if (iLiked) return removeLike();
   return addLike(replyId);
 };
 const addLike = async (replyId: number) => {
