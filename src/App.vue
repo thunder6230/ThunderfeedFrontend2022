@@ -71,7 +71,7 @@ thunderFeedStore.checkUserLoggedIn();
           </nav>
           <nav v-else :key="2">
             <RouterLink
-              :to="`/profile/${thunderFeedStore.getUserId}`"
+              :to="`/profile/${thunderFeedStore.getUserId}/posts`"
               :class="NAV_LINK_STYLE"
               >My Profile</RouterLink
             >

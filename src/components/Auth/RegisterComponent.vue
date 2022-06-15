@@ -127,7 +127,7 @@ const capitalizedName = (name: string) => {
           </li>
         </TransitionGroup>
       </div>
-      <button @click="sendRegister()" :class="TailwindClasses.BUTTON_STYLE">
+      <button type="submit" :class="TailwindClasses.BUTTON_STYLE">
         Register
       </button>
       <small

@@ -111,6 +111,7 @@ export const useThunderFeedStore = defineStore({
       }
     },
     async register(registerData: RegisterModel): Promise<CRUDResponse> {
+
       return axios
         .post(this.urls.AUTH.REGISTER, registerData)
         .then((resp) => {
@@ -217,7 +218,7 @@ export const useThunderFeedStore = defineStore({
     getAuthHeaderConfigWithFileUpload() {
       return {
         headers: {
-          Authorization: `bearer ${this.userToken}`,
+          "Authorization": `bearer ${this.userToken}`,
           "content-type": "multipart/form-data",
         },
       };

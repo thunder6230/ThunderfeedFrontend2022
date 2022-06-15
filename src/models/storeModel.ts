@@ -11,21 +11,43 @@ export interface Post {
   id: number;
   body: string;
   user: User;
-  likes?: any;
-  comments?: any;
-  pictures: any;
+  userTo: User;
+  likes: Like[];
+  comments: Comment[];
+  pictures: Picture[];
   createdAt: string;
-  updatedAt: string;
 }
 
 export interface User {
   id: number;
-  email: string;
   firstName: string;
   lastName: string;
-  createdAt: string;
-  userPosts: Post[];
-  gender: string;
+}
+export interface Picture {
+  id: number;
+  imgpath: string;
+  postId?: number;
+  commentId?: number;
+}
+export interface Comment {
+  id: number;
+  userId: number;
+  postId: number;
+  body: string
+  replies: Reply[]
+}
+export interface Reply {
+  id: number;
+  userId: number;
+  commentId: number;
+  body: string
+}
+export interface Like {
+  id: number;
+  userId: number;
+  postId?: number;
+  commentId?: number;
+  replyId?: number;
 }
 
 export interface Auth {

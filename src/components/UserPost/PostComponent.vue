@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Post } from "@/models/storeModel";
+import type {Like, Post} from "@/models/storeModel";
 import TailwindClasses from "@/utilities/TailwindClasses";
 import { useThunderFeedStore } from "@/stores/thunderfeed";
 import type { AddPostLikeParams } from "@/models/HelperModels";
@@ -14,6 +14,7 @@ const props = defineProps<{
   index: number;
 }>();
 const propsCopy = { ...props };
+console.log(propsCopy.post)
 const myLikeId = ref<number>();
 const thunderFeedStore = useThunderFeedStore();
 const toastStore = useToastStore();
@@ -54,16 +55,16 @@ const pluralize = (word: string, count: number) => {
       return count == 1 ? "Comment" : "Comments";
   }
 };
-const checkLike = (likes: Array<any>) => {
+const checkLike = (likes: Array<Like>) => {
   const count = likes.filter(
-    (like) => like.user.id == thunderFeedStore.getUserId
+    (like) => like.userId == thunderFeedStore.getUserId
   );
   if (count.length == 0) return false;
   myLikeId.value = count[0].id;
   return true;
 };
 const addComment = ref(false);
-const addNewCommentToProps = (comment: any) => {
+const addNewCommentToProps = (comment: Comment) => {
   propsCopy.post.comments.push(comment);
   addComment.value = false;
 };
@@ -90,6 +91,7 @@ const handleEditInput = (newBody: string) => {
   propsCopy.post.body = newBody;
   isEditActive.value = false;
 };
+console.log(propsCopy.post.userTo)
 </script>
 
 <template>
@@ -113,19 +115,25 @@ const handleEditInput = (newBody: string) => {
           ></font-awesome-icon>
         </div>
       </Transition>
-      <RouterLink :to="`/profile/${propsCopy.post.user.id}`">
+      <RouterLink :to="`/profile/${propsCopy.post.user.id}/posts`">
         <div :class="TailwindClasses.IMAGE_DIV_STYLE"></div>
       </RouterLink>
       <div :class="TailwindClasses.POST_CONTENT_STYLE">
         <RouterLink
-          :to="`/profile/${propsCopy.post.user.id}`"
+          :to="`/profile/${propsCopy.post.user.id}/posts`"
           class="font-semibold text-amber-900"
         >
           {{
-            getFullName(
-              propsCopy.post.user.firstName,
-              propsCopy.post.user.lastName
-            )
+            getFullName(propsCopy.post.user.firstName, propsCopy.post.user.lastName )
+          }}
+        </RouterLink>
+        {{propsCopy.post.userTo != null ? `to`  : ""}}
+        <RouterLink v-if="propsCopy.post.userTo != null"
+            :to="`/profile/${propsCopy.post.userTo.id}/posts`"
+            class="font-semibold text-amber-900"
+        >
+          {{
+            getFullName(propsCopy.post.userTo.firstName, propsCopy.post.userTo.lastName )
           }}
         </RouterLink>
         <TransitionGroup name="slide-in" tag="div" class="w-full">

@@ -7,6 +7,7 @@ import type { AddCommentLikeParams } from "@/models/HelperModels";
 import EditCommentComponent from "@/components/Comment/EditCommentComponent.vue";
 import AddReplyComponent from "@/components/Comment/Reply/AddReplyComponent.vue";
 import ReplyComponent from "@/components/Comment/Reply/ReplyComponent.vue";
+import type {Like} from "@/models/storeModel";
 
 const props = defineProps<{
   comment: any;
@@ -18,7 +19,7 @@ const toastStore = useToastStore();
 const getFullName = (fname: string, lname: string): string => {
   return `${fname} ${lname}`;
 };
-const handleLike = async (postId: number, commentLikes: Array<any>) => {
+const handleLike = async (postId: number, commentLikes: Array<Like>) => {
   const iLiked = checkLike(commentLikes);
   if (iLiked) return removeLike();
   return addLike(postId);
@@ -46,9 +47,9 @@ const removeLike = async () => {
 };
 
 const myLikeId = ref<number>(-1);
-const checkLike = (likes: Array<any>) => {
+const checkLike = (likes: Array<Like>) => {
   const count = likes.filter(
-    (like) => like.user.id == thunderFeedStore.getUserId
+    (like) => like.userId == thunderFeedStore.getUserId
   );
   if (count.length == 0) return false;
   myLikeId.value = count[0].id;
@@ -80,13 +81,13 @@ const handleReplyDelete = (replyId: number) => {
 </script>
 <template>
   <li class="flex mb-2">
-    <RouterLink :to="`/profile/${propsCopy.comment.user.id}`">
+    <RouterLink :to="`/profile/${propsCopy.comment.user.id}/posts`">
       <div :class="TailwindClasses.COMMENT_IMAGE_DIV_STYLE"></div>
     </RouterLink>
     <div class="flex flex-col w-11/12">
       <div :class="TailwindClasses.COMMENT_CONTENT_STYLE">
         <RouterLink
-          :to="`/profile/${propsCopy.comment.user.id}`"
+          :to="`/profile/${propsCopy.comment.user.id}/posts`"
           class="font-semibold text-black m-0 text-sm"
         >
           {{
@@ -103,8 +104,9 @@ const handleReplyDelete = (replyId: number) => {
             v-if="isEditActive"
             @commentEdited="handleEditInput($event)"
             @focusout="isEditActive = false"
+            :key="1"
           />
-          <p class="font-semibold text-amber-900 text-lg leading-3" v-else>
+          <p class="font-semibold text-amber-900 text-lg leading-3" v-else :key="2">
             {{ propsCopy.comment.body }}
           </p>
         </TransitionGroup>

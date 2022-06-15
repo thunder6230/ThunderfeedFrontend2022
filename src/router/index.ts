@@ -20,10 +20,29 @@ const router = createRouter({
       path: "/profile/:id?",
       name: "profile",
       component: () => import("../views/ProfileView.vue"),
+      children:[
+        {
+          path: "posts",
+          component: () => import("../components/UserPost/Index.vue")
+        },
+        {
+          path: "userdata",
+          component: () => import("../components/UserPost/Index.vue")
+        },
+        {
+          path: "images",
+          component: () => import("../components/UserPost/Index.vue")
+        },
+        {
+          path: "settings",
+          component: () => import("../components/UserPost/Index.vue")
+        },
+      ]
     },
     {
       path: "/about",
       name: "about",
+
       // route level code-splitting
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.

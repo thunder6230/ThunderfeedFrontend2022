@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import TailwindClasses from "@/utilities/TailwindClasses";
-import { ref, defineEmits } from "vue";
+import { ref } from "vue";
 const emit = defineEmits(["newInput"]);
 const props = defineProps<{
   value?: string;
