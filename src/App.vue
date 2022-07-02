@@ -1,8 +1,7 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
+import { RouterView } from "vue-router";
 import AuthComponent from "@/components/Auth/AuthComponent.vue";
 import ToastMessageComponent from "@/components/Helpers/ToastMessageComponent.vue";
-import tailwindClasses from "@/utilities/TailwindClasses";
 import { useToastStore } from "@/stores/Toast";
 import { useThunderFeedStore } from "@/stores/thunderfeed";
 import "animate.css";
@@ -10,11 +9,6 @@ import NavbarComponent from "@/components/Navbar/NavbarComponent.vue";
 
 const thunderFeedStore = useThunderFeedStore();
 const toastStore = useToastStore();
-const handleLogout = async () => {
-  const isLoggedOut = await thunderFeedStore.logOut();
-  toastStore.showToast(isLoggedOut);
-};
-const { NAV_LINK_STYLE, HEADER_STYLE } = tailwindClasses;
 thunderFeedStore.checkUserLoggedIn();
 </script>
 

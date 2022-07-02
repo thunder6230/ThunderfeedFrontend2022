@@ -28,19 +28,19 @@ const router = createRouter({
       children: [
         {
           path: "posts",
-          component: () => import("../components/UserPost/Index.vue"),
+          component: () => import("../components/UserPost/PostsIndex.vue"),
         },
         {
           path: "userdata",
-          component: () => import("../components/UserPost/Index.vue"),
+          component: () => import("../components/UserPost/PostsIndex.vue"),
         },
         {
           path: "images",
-          component: () => import("../components/UserPost/Index.vue"),
+          component: () => import("../components/UserPost/PostsIndex.vue"),
         },
         {
           path: "settings",
-          component: () => import("../components/UserPost/Index.vue"),
+          component: () => import("../components/UserPost/PostsIndex.vue"),
         },
       ],
     },

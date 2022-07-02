@@ -6,13 +6,14 @@ const props = defineProps<{
     elementId: number;
   };
 }>();
-console.log(props)
+console.log(props);
 </script>
 <template>
-  <RouterLink :to="`/Posts/${props.element.elementId}`" >
+  <RouterLink :to="`/Posts/${props.element.elementId}`">
     <div>
       <strong>{{ name }}</strong>
-      liked your Post</div>
+      liked your Post
+    </div>
   </RouterLink>
 </template>
 

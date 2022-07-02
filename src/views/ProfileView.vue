@@ -2,10 +2,8 @@
 import { useThunderFeedStore } from "@/stores/thunderfeed";
 import { useToastStore } from "@/stores/Toast";
 import { onMounted } from "vue";
-import PostComponent from "@/components/UserPost/PostComponent.vue";
-import AddPostComponent from "@/components/UserPost/AddPostComponent.vue";
 import { useRoute } from "vue-router";
-import Index from "@/components/UserPost/Index.vue";
+import Index from "@/components/UserPost/PostsIndex.vue";
 const thunderFeedStore = useThunderFeedStore();
 const toastStore = useToastStore();
 const route = useRoute();

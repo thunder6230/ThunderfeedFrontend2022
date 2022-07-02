@@ -5,7 +5,9 @@ defineProps<{
 }>();
 </script>
 <template>
-  <div><strong>{{ name }}</strong> wants to be your friend</div>
+  <div>
+    <strong>{{ name }}</strong> wants to be your friend
+  </div>
 </template>
 
 <style scoped></style>

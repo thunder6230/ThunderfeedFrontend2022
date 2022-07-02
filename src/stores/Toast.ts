@@ -1,6 +1,5 @@
 import { acceptHMRUpdate, defineStore } from "pinia";
 import type { ToastModel, ToastStoreModel } from "@/models/HelperModels";
-import { useThunderFeedStore } from "@/stores/thunderfeed";
 
 export const useToastStore = defineStore({
   id: "Toast",

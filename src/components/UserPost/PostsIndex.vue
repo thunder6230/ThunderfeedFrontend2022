@@ -2,6 +2,7 @@
 import { useThunderFeedStore } from "@/stores/thunderfeed";
 import PostComponent from "@/components/UserPost/PostComponent.vue";
 import AddPostComponent from "@/components/UserPost/AddPostComponent.vue";
+
 const thunderFeedStore = useThunderFeedStore();
 const props = defineProps<{
   userTo?: string;
@@ -15,12 +16,13 @@ const props = defineProps<{
         :user-to="props.userTo"
       />
     </Transition>
+
     <TransitionGroup
       appear
       name="list"
-      v-if="thunderFeedStore.posts.length > 0"
       class="flex flex-col items-center w-full"
       tag="ul"
+      v-if="thunderFeedStore.posts.length > 0"
     >
       <PostComponent
         v-for="(post, index) in thunderFeedStore.posts"

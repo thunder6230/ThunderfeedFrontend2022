@@ -6,7 +6,7 @@ import { onMounted, ref } from "vue";
 import type { EditCommentParams } from "@/models/HelperModels";
 
 const props = defineProps<{
-  commentId: any;
+  commentId: number;
 }>();
 const propsCopy = { ...props };
 const thunderFeedStore = useThunderFeedStore();

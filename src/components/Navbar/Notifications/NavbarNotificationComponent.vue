@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { RouterLink, RouterView } from "vue-router";
+import { RouterLink } from "vue-router";
 import { useThunderFeedStore } from "@/stores/thunderfeed";
 import "../../../../node_modules/animate.css/animate.css";
 import tailwindClasses from "@/utilities/TailwindClasses";
@@ -14,20 +14,26 @@ const notificationBall = ref();
 onMounted(async () => {
   setInterval(async () => {
     const updateResponse = await thunderFeedStore.getUnreadNotifications();
-    if(updateResponse?.updated){
-      if(notificationBall.value != null){
-        notificationBall.value.classList.add("animate__swing")
-        setTimeout(() => notificationBall.value.classList.remove("animate__swing"), 2000)
+    if (updateResponse?.updated) {
+      if (notificationBall.value != null) {
+        notificationBall.value.classList.add("animate__swing");
+        setTimeout(
+          () => notificationBall.value.classList.remove("animate__swing"),
+          2000
+        );
       }
     }
   }, 30000);
-})
+});
 </script>
 <template>
-  <div class="relative" @mouseenter="isNotificationListOn = true"
-       @mouseleave="isNotificationListOn = false">
+  <div
+    class="relative"
+    @mouseenter="isNotificationListOn = true"
+    @mouseleave="isNotificationListOn = false"
+  >
     <RouterLink
-      :to="`/Notifications/${thunderFeedStore.getUserId}`"
+      :to="`/Notifications/${userId}`"
       class="relative"
       :class="NAV_LINK_STYLE"
       :key="4"
@@ -36,13 +42,14 @@ onMounted(async () => {
       Notifications
       <span
         class="absolute w-5 h-5 rounded-full bg-red-600 text-white flex justify-center items-center -right-4 -top-2 text-xs font-bold animate__animated"
-        ref="notificationBall">{{ thunderFeedStore.notifications.length }}</span
+        ref="notificationBall"
+        >{{ thunderFeedStore.notifications.length }}</span
       >
     </RouterLink>
     <Transition
       enter-active-class="animate__animated animate__bounceInDown"
       leave-active-class="animate__animated animate__bounceOutUp"
-      >
+    >
       <ul
         class="absolute -left-1/2 border-amber-700 border-2"
         v-if="isNotificationListOn && thunderFeedStore.notifications.length > 0"
@@ -54,14 +61,13 @@ onMounted(async () => {
           :notification="notification"
         />
         <li
-          class="bg-amber-50 w-full text-amber-900 p-2 hover:bg-amber-300 transition text-amber-900 font-bold text-center w-full">
-          <RouterLink
-            :to="`/Notifications/${thunderFeedStore.getUserId}`" >All Notifications
+          class="bg-amber-50 w-full text-amber-900 p-2 hover:bg-amber-300 transition text-amber-900 font-bold text-center w-full"
+        >
+          <RouterLink :to="`/Notifications/${userId}`"
+            >All Notifications
           </RouterLink>
-
         </li>
       </ul>
-
     </Transition>
   </div>
 </template>

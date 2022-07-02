@@ -4,33 +4,30 @@ import TailwindClasses from "@/utilities/TailwindClasses";
 import { useThunderFeedStore } from "@/stores/thunderfeed";
 import type { AddPostLikeParams } from "@/models/HelperModels";
 import { useToastStore } from "@/stores/Toast";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
+import type { Comment } from "@/models/storeModel";
 import CommentComponent from "@/components/Comment/CommentComponent.vue";
 import AddCommentComponent from "@/components/Comment/AddCommentComponent.vue";
 import EditPostComponent from "@/components/UserPost/EditPostComponent.vue";
 const thunderFeedStore = useThunderFeedStore();
 const toastStore = useToastStore();
+
 const props = defineProps<{
   post?: Post;
   index?: number;
   singlePost?: {
-    isSingle: boolean,
-    id: string
-  }
+    isSingle: boolean;
+    id: string;
+  };
 }>();
+
 const propsCopy = { ...props };
-if(propsCopy.singlePost?.isSingle){
-  const {id} = propsCopy.singlePost
-  const response = await thunderFeedStore.getPost(id);
-  propsCopy.post = response.post
-// console.log(post.value)
-  toastStore.showToast(response);
-}
+
 const myLikeId = ref<number>();
 const getFullName = (fname: string, lname: string): string => {
   return `${fname} ${lname}`;
 };
-const handleLike = async (postId: number, postLikes: Array<any>) => {
+const handleLike = async (postId: number, postLikes: Array<Like>) => {
   const iLiked = checkLike(postLikes);
   if (iLiked) return removeLike();
   return addLike(postId);
@@ -49,9 +46,9 @@ const removeLike = async () => {
   if (myLikeId.value == null) return;
   const response = await thunderFeedStore.removeLike(myLikeId.value);
   if (response == undefined) return;
-  if (response.id) {
+  if (response.id && propsCopy.post != undefined) {
     propsCopy.post.likes = Object.values(propsCopy.post.likes).filter(
-      (like: any) => like.id != response.id
+      (like: Like) => like.id != response.id
     );
   }
   toastStore.showToast(response);
@@ -65,7 +62,7 @@ const pluralize = (word: string, count: number) => {
   }
 };
 const checkLike = (likes: Array<Like>) => {
-  if(thunderFeedStore.getUserId == null) return false
+  if (thunderFeedStore.getUserId == null) return false;
   const count = likes.filter(
     (like) => like.userId == thunderFeedStore.getUserId
   );
@@ -75,32 +72,50 @@ const checkLike = (likes: Array<Like>) => {
 };
 const addComment = ref(false);
 const addNewCommentToProps = (comment: Comment) => {
-  propsCopy.post.comments.push(comment);
-  addComment.value = false;
+  if (propsCopy.post != undefined) {
+    propsCopy.post.comments.push(comment);
+    addComment.value = false;
+  }
 };
 
 const actionsVisible = ref(false);
 const handleMouseEnter = () => {
-  if (thunderFeedStore.getUserId != propsCopy.post.user.id)
-    return (actionsVisible.value = false);
-  return (actionsVisible.value = true);
+  if (propsCopy.post) {
+    const { id } = propsCopy.post.user;
+    if (thunderFeedStore.getUserId != id) return (actionsVisible.value = false);
+    return (actionsVisible.value = true);
+  }
 };
 const handleDeletePost = async () => {
   if (!confirm("Are you sure you want to delete this Post?")) return;
-  const response = await thunderFeedStore.deletePost(propsCopy.post.id);
-  if (response == undefined) return;
-  toastStore.showToast(response);
+  if (propsCopy.post) {
+    const response = await thunderFeedStore.deletePost(propsCopy.post.id);
+    if (response == undefined) return;
+    toastStore.showToast(response);
+  }
 };
 const handleCommentDelete = (commentId: number) => {
-  propsCopy.post.comments = propsCopy.post.comments.filter(
-    (comment: any) => comment.id != commentId
-  );
+  if (propsCopy.post) {
+    propsCopy.post.comments = propsCopy.post.comments.filter(
+      (comment: Comment) => comment.id != commentId
+    );
+  }
 };
 const isEditActive = ref(false);
 const handleEditInput = (newBody: string) => {
-  propsCopy.post.body = newBody;
-  isEditActive.value = false;
+  if (propsCopy.post) {
+    propsCopy.post.body = newBody;
+    isEditActive.value = false;
+  }
 };
+onMounted(async () => {
+  if (propsCopy.singlePost?.isSingle === true) {
+    const { id } = propsCopy.singlePost;
+    const response = await thunderFeedStore.getPost(id);
+    propsCopy.post = response.post;
+    toastStore.showToast(response);
+  }
+});
 </script>
 
 <template>

@@ -2,7 +2,6 @@
 import { useThunderFeedStore } from "@/stores/thunderfeed";
 import LoginComponent from "@/components/Auth/LoginComponent.vue";
 import RegisterComponent from "@/components/Auth/RegisterComponent.vue";
-import { ref } from "vue";
 
 const thunderFeedStore = useThunderFeedStore();
 </script>

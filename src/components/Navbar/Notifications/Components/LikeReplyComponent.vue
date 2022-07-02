@@ -5,7 +5,9 @@ defineProps<{
 }>();
 </script>
 <template>
-  <div><strong>{{ name }}</strong> liked your Reply</div>
+  <div>
+    <strong>{{ name }}</strong> liked your Reply
+  </div>
 </template>
 
 <style scoped></style>

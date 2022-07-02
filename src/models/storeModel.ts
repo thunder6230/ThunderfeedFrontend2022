@@ -4,8 +4,10 @@ export interface ThunderStore {
   URLS: Urls;
   auth: Auth;
   posts: Post[];
-  userData: any;
+  userData: { key: string; value: string };
   notifications: Notification[];
+  count: number;
+  page: number;
 }
 
 export interface Post {
@@ -26,22 +28,29 @@ export interface User {
 }
 export interface Picture {
   id: number;
-  imgpath: string;
+  fileName: string;
+  imgPath: string;
   postId?: number;
   commentId?: number;
+
+  likes: Like[];
 }
 export interface Comment {
   id: number;
   userId: number;
   postId: number;
   body: string;
+  user: User;
   replies: Reply[];
+  likes: Like[];
 }
 export interface Reply {
   id: number;
   userId: number;
   commentId: number;
   body: string;
+  likes: Like[];
+  user: User;
 }
 export interface Like {
   id: number;

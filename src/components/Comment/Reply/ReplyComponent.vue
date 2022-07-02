@@ -5,7 +5,8 @@ import TailwindClasses from "@/utilities/TailwindClasses";
 import { ref } from "vue";
 import type { AddReplyLikeParams } from "@/models/HelperModels";
 import EditReplyComponent from "@/components/Comment/Reply/EditReplyComponent.vue";
-import type { Reply } from "@/models/storeModel";
+import type { Like, Reply } from "@/models/storeModel";
+import { getFullName } from "@/components/Helpers/Functions";
 
 const props = defineProps<{
   reply: Reply;
@@ -14,10 +15,11 @@ const props = defineProps<{
 const propsCopy = { ...props };
 const thunderFeedStore = useThunderFeedStore();
 const toastStore = useToastStore();
-const getFullName = (fname: string, lname: string): string => {
-  return `${fname} ${lname}`;
-};
-const handleLike = async (replyId: number, replyLikes: Array<any>) => {
+
+const { firstName, lastName } = propsCopy.reply.user;
+const name = getFullName(firstName, lastName);
+
+const handleLike = async (replyId: number, replyLikes: Array<Like>) => {
   const iLiked = checkLike(replyLikes);
   if (iLiked) return removeLike();
   return addLike(replyId);
@@ -29,25 +31,28 @@ const addLike = async (replyId: number) => {
   };
   const response = await thunderFeedStore.addReplyLike(params);
   if (response == undefined) return;
-  propsCopy.reply.likes.push(response.like);
-  toastStore.showToast(response);
-  myLikeId.value = response.like.id;
+  const { like } = response;
+  if (like != undefined) {
+    propsCopy.reply.likes.push(like);
+    toastStore.showToast(response);
+    myLikeId.value = like.id;
+  }
 };
 const removeLike = async () => {
   const response = await thunderFeedStore.removeLike(myLikeId.value);
   if (response == undefined) return;
   if (response.id) {
     propsCopy.reply.likes = propsCopy.reply.likes.filter(
-      (like: any) => like.id != response.id
+      (like: Like) => like.id != response.id
     );
   }
   toastStore.showToast(response);
 };
 
 const myLikeId = ref<number>(-1);
-const checkLike = (likes: Array<any>) => {
+const checkLike = (likes: Array<Like>) => {
   const count = likes.filter(
-    (like) => like.user.id == thunderFeedStore.getUserId
+    (like: Like) => like.userId == thunderFeedStore.getUserId
   );
   if (count.length == 0) return false;
   myLikeId.value = count[0].id;
@@ -77,12 +82,7 @@ const handleEditInput = (newBody: string) => {
         :to="`/profile/${propsCopy.reply.user.id}`"
         class="font-semibold text-black m-0 text-sm"
       >
-        {{
-          getFullName(
-            propsCopy.reply.user.firstName,
-            propsCopy.reply.user.lastName
-          )
-        }}
+        {{ name }}
       </RouterLink>
       <TransitionGroup name="slide-in" tag="div" class="w-full">
         <EditReplyComponent
@@ -111,7 +111,7 @@ const handleEditInput = (newBody: string) => {
         </button>
         <button
           :class="TailwindClasses.COMMENT_ACTION_BUTTON_STYLE"
-          v-if="propsCopy.reply.user.id == thunderFeedStore.getUserId"
+          v-if="propsCopy.reply.user.id === thunderFeedStore.getUserId"
           @click="isEditActive = true"
         >
           Edit
@@ -119,9 +119,9 @@ const handleEditInput = (newBody: string) => {
         <button
           :class="TailwindClasses.COMMENT_ACTION_BUTTON_STYLE"
           @click="
-            handleDelete(propsCopy.reply.id, propsCopy.reply.likes, index)
+            handleDelete()
           "
-          v-if="propsCopy.reply.user.id == thunderFeedStore.getUserId"
+          v-if="propsCopy.reply.user.id === thunderFeedStore.getUserId"
         >
           Delete
         </button>

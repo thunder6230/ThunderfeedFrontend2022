@@ -4,7 +4,7 @@ import { ref } from "vue";
 const emit = defineEmits(["newInput"]);
 const props = defineProps<{
   value?: string;
-  errors: Array<any>;
+  errors: Array<string>;
   placeholder: string;
   type?: string;
 }>();

@@ -70,6 +70,8 @@ export const useThunderFeedStore = defineStore({
       },
       notifications: [],
       posts: [],
+      page: 1,
+      count: 10,
     } as ThunderStore),
   getters: {
     getUserId: (state) =>
@@ -89,7 +91,7 @@ export const useThunderFeedStore = defineStore({
       );
       // if(response.status != 200)
       this.notifications = response.data;
-      return { updated: true }
+      return { updated: true };
     },
     async checkUserLoggedIn() {
       const userLoggedIn = localStorage.getItem("userLoggedIn");
@@ -113,7 +115,7 @@ export const useThunderFeedStore = defineStore({
             state.userData = this.parseJwt(resp.data);
             localStorage.setItem("userLoggedIn", resp.data);
           });
-          this.getUnreadNotifications()
+          this.getUnreadNotifications();
           return { type: "Success", message: "Login Successful" };
         })
         .catch((error) => {
@@ -192,12 +194,32 @@ export const useThunderFeedStore = defineStore({
           return { type: "Error", message: "error.response.data" };
         });
     },
+    async getMorePosts(id?: string): Promise<CRUDResponse> {
+      const url =
+        id === undefined
+          ? this.URLS.POST.GET_ALL
+          : `${this.URLS.POST.GET_ALL_USER}/${id}`;
+      return axios
+        .get(url)
+        .then((resp) => {
+          this.$patch((state) => state.posts.push(resp.data));
+          return { type: "Success", message: "Posts has been loaded" };
+        })
+        .catch((error) => {
+          console.log(error);
+          return { type: "Error", message: "error.response.data" };
+        });
+    },
     async getPost(id: string): Promise<CRUDResponse> {
       const url = this.URLS.POST.GET;
       return axios
         .get(url + id)
         .then((resp) => {
-          return { type: "Success", message: `Post "${id}" has been loaded`, post: resp.data };
+          return {
+            type: "Success",
+            message: `Post "${id}" has been loaded`,
+            post: resp.data,
+          };
         })
         .catch((error) => {
           console.log(error);
@@ -212,7 +234,7 @@ export const useThunderFeedStore = defineStore({
           this.$patch((state) => (state.posts = resp.data));
           return { type: "Success", message: "Posts has been loaded" };
         })
-        .catch((error) => {
+        .catch(() => {
           return { type: "Error", message: "error.response.data" };
         });
     },

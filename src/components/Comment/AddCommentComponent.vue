@@ -25,7 +25,7 @@ const handleSubmit = async () => {
   const response = await thunderFeedStore.addComment(formData);
   if (response == undefined) return;
   toastStore.showToast(response);
-  if (response.type == "Success") {
+  if (response.type == "Success" && response.comment) {
     emit("commentAdded", response.comment);
     formData = new FormData();
     commentBody.value = "";
@@ -42,19 +42,6 @@ const onFileChange = (event: Event) => {
     formData.append("file", file, file.name);
     files.value.push(file.name);
   });
-};
-const handleDeleteFile = (indexToDelete: number) => {
-  files.value = files.value.filter((file, index) => index != indexToDelete);
-
-  let formDataFiles = formData.getAll("file");
-  formDataFiles = formDataFiles.filter((file, index) => index != indexToDelete);
-  const filteredFormData = new FormData();
-  formDataFiles.forEach((file) => {
-    if (file instanceof File) {
-      filteredFormData.append("file", file, file.name);
-    }
-  });
-  formData = filteredFormData;
 };
 </script>
 

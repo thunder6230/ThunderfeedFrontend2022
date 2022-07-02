@@ -4,7 +4,7 @@ import tailwindClasses from "@/utilities/TailwindClasses";
 import { useToastStore } from "@/stores/Toast";
 import { useThunderFeedStore } from "@/stores/thunderfeed";
 import "animate.css";
-import { onMounted, ref } from "vue";
+import { onMounted } from "vue";
 import NavbarNotificationComponent from "@/components/Navbar/Notifications/NavbarNotificationComponent.vue";
 
 const thunderFeedStore = useThunderFeedStore();

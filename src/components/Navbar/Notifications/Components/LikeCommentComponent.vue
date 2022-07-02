@@ -1,12 +1,13 @@
 <script setup lang="ts">
 defineProps<{
   name: string;
-  element:
 }>();
 </script>
 <template>
   <RouterLink to="/">
-    <div><strong>{{ name }}</strong> liked your Comment</div>
+    <div>
+      <strong>{{ name }}</strong> liked your Comment
+    </div>
   </RouterLink>
 </template>
 

@@ -2,7 +2,7 @@
 import { useThunderFeedStore } from "@/stores/thunderfeed";
 import { useToastStore } from "@/stores/Toast";
 import { onMounted } from "vue";
-import Index from "@/components/UserPost/Index.vue";
+import Index from "@/components/UserPost/PostsIndex.vue";
 const thunderFeedStore = useThunderFeedStore();
 const toastStore = useToastStore();
 onMounted(async () => {
