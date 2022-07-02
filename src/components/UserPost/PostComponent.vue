@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {Like, Post} from "@/models/storeModel";
+import type { Like, Post } from "@/models/storeModel";
 import TailwindClasses from "@/utilities/TailwindClasses";
 import { useThunderFeedStore } from "@/stores/thunderfeed";
 import type { AddPostLikeParams } from "@/models/HelperModels";
@@ -8,16 +8,25 @@ import { ref } from "vue";
 import CommentComponent from "@/components/Comment/CommentComponent.vue";
 import AddCommentComponent from "@/components/Comment/AddCommentComponent.vue";
 import EditPostComponent from "@/components/UserPost/EditPostComponent.vue";
-
-const props = defineProps<{
-  post: Post;
-  index: number;
-}>();
-const propsCopy = { ...props };
-console.log(propsCopy.post)
-const myLikeId = ref<number>();
 const thunderFeedStore = useThunderFeedStore();
 const toastStore = useToastStore();
+const props = defineProps<{
+  post?: Post;
+  index?: number;
+  singlePost?: {
+    isSingle: boolean,
+    id: string
+  }
+}>();
+const propsCopy = { ...props };
+if(propsCopy.singlePost?.isSingle){
+  const {id} = propsCopy.singlePost
+  const response = await thunderFeedStore.getPost(id);
+  propsCopy.post = response.post
+// console.log(post.value)
+  toastStore.showToast(response);
+}
+const myLikeId = ref<number>();
 const getFullName = (fname: string, lname: string): string => {
   return `${fname} ${lname}`;
 };
@@ -56,6 +65,7 @@ const pluralize = (word: string, count: number) => {
   }
 };
 const checkLike = (likes: Array<Like>) => {
+  if(thunderFeedStore.getUserId == null) return false
   const count = likes.filter(
     (like) => like.userId == thunderFeedStore.getUserId
   );
@@ -91,7 +101,6 @@ const handleEditInput = (newBody: string) => {
   propsCopy.post.body = newBody;
   isEditActive.value = false;
 };
-console.log(propsCopy.post.userTo)
 </script>
 
 <template>
@@ -124,16 +133,23 @@ console.log(propsCopy.post.userTo)
           class="font-semibold text-amber-900"
         >
           {{
-            getFullName(propsCopy.post.user.firstName, propsCopy.post.user.lastName )
+            getFullName(
+              propsCopy.post.user.firstName,
+              propsCopy.post.user.lastName
+            )
           }}
         </RouterLink>
-        {{propsCopy.post.userTo != null ? `to`  : ""}}
-        <RouterLink v-if="propsCopy.post.userTo != null"
-            :to="`/profile/${propsCopy.post.userTo.id}/posts`"
-            class="font-semibold text-amber-900"
+        {{ propsCopy.post.userTo != null ? `to` : "" }}
+        <RouterLink
+          v-if="propsCopy.post.userTo != null"
+          :to="`/profile/${propsCopy.post.userTo.id}/posts`"
+          class="font-semibold text-amber-900"
         >
           {{
-            getFullName(propsCopy.post.userTo.firstName, propsCopy.post.userTo.lastName )
+            getFullName(
+              propsCopy.post.userTo.firstName,
+              propsCopy.post.userTo.lastName
+            )
           }}
         </RouterLink>
         <TransitionGroup name="slide-in" tag="div" class="w-full">
@@ -157,7 +173,7 @@ console.log(propsCopy.post.userTo)
           <img
             v-for="(picture, index) in propsCopy.post.pictures"
             :key="picture.fileName"
-            :src="`${thunderFeedStore.urls.BASE}/${picture.imgPath}`"
+            :src="`${thunderFeedStore.URLS.BASE}/${picture.imgPath}`"
             class="w-full object-cover lg:w-3/6 p-2 shadow"
             style="max-height: 300px"
             :alt="`Picture ${index + 1}`"

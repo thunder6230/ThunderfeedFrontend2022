@@ -1,10 +1,11 @@
 export interface ThunderStore {
   userLoggedIn: boolean;
   userToken: string;
-  urls: Urls;
+  URLS: Urls;
   auth: Auth;
   posts: Post[];
   userData: any;
+  notifications: Notification[];
 }
 
 export interface Post {
@@ -33,14 +34,14 @@ export interface Comment {
   id: number;
   userId: number;
   postId: number;
-  body: string
-  replies: Reply[]
+  body: string;
+  replies: Reply[];
 }
 export interface Reply {
   id: number;
   userId: number;
   commentId: number;
-  body: string
+  body: string;
 }
 export interface Like {
   id: number;
@@ -48,6 +49,15 @@ export interface Like {
   postId?: number;
   commentId?: number;
   replyId?: number;
+}
+export interface Notification {
+  id: number;
+  userFrom: User;
+  postId?: number;
+  commentId?: number;
+  replyId?: number;
+  isUnread: boolean;
+  type: string;
 }
 
 export interface Auth {
@@ -63,6 +73,7 @@ export interface Urls {
   COMMENT: CommentUrls;
   LIKE: LikeUrls;
   REPLY: CrudUrls;
+  NOTIFICATION: NotificationsUrls;
 }
 
 interface AuthUrls {
@@ -101,4 +112,10 @@ interface LikeUrls {
   ADD_COMMENT: string;
   DELETE: string;
   ADD_REPLY: string;
+}
+interface NotificationsUrls {
+  GET_ALL: string;
+  GET_ALL_UNREAD: string;
+  DELETE: string;
+  MARK_READ: string;
 }

@@ -17,27 +17,32 @@ const router = createRouter({
       component: Posts,
     },
     {
-      path: "/profile/:id?",
+      path: "/posts/:id",
+      name: "singlePost",
+      component: () => import("../views/SinglePostView.vue"),
+    },
+    {
+      path: "/profile/:id",
       name: "profile",
       component: () => import("../views/ProfileView.vue"),
-      children:[
+      children: [
         {
           path: "posts",
-          component: () => import("../components/UserPost/Index.vue")
+          component: () => import("../components/UserPost/Index.vue"),
         },
         {
           path: "userdata",
-          component: () => import("../components/UserPost/Index.vue")
+          component: () => import("../components/UserPost/Index.vue"),
         },
         {
           path: "images",
-          component: () => import("../components/UserPost/Index.vue")
+          component: () => import("../components/UserPost/Index.vue"),
         },
         {
           path: "settings",
-          component: () => import("../components/UserPost/Index.vue")
+          component: () => import("../components/UserPost/Index.vue"),
         },
-      ]
+      ],
     },
     {
       path: "/about",
@@ -63,6 +68,14 @@ const router = createRouter({
       // this generates a separate chunk (About.[hash].js) for this route
       // which is lazy-loaded when the route is visited.
       component: () => import("../views/FriendsView.vue"),
+    },
+    {
+      path: "/notifications/:id",
+      name: "notifications",
+      // route level code-splitting
+      // this generates a separate chunk (About.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
+      component: () => import("../views/NotificationsView.vue"),
     },
   ],
 });

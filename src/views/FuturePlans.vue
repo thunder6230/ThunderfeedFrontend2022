@@ -10,7 +10,8 @@ const plans = reactive<Detail[]>([
       "Like Comment and Reply the Images Separate From the Post",
       "All Posts will have a Different Gallery Instance",
     ],
-  },{
+  },
+  {
     name: "Real Time Chat",
     icon: "comments",
     details: [

@@ -7,7 +7,7 @@ import type { AddCommentLikeParams } from "@/models/HelperModels";
 import EditCommentComponent from "@/components/Comment/EditCommentComponent.vue";
 import AddReplyComponent from "@/components/Comment/Reply/AddReplyComponent.vue";
 import ReplyComponent from "@/components/Comment/Reply/ReplyComponent.vue";
-import type {Like} from "@/models/storeModel";
+import type { Like } from "@/models/storeModel";
 
 const props = defineProps<{
   comment: any;
@@ -106,7 +106,11 @@ const handleReplyDelete = (replyId: number) => {
             @focusout="isEditActive = false"
             :key="1"
           />
-          <p class="font-semibold text-amber-900 text-lg leading-3" v-else :key="2">
+          <p
+            class="font-semibold text-amber-900 text-lg leading-3"
+            v-else
+            :key="2"
+          >
             {{ propsCopy.comment.body }}
           </p>
         </TransitionGroup>

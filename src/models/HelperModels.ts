@@ -1,4 +1,4 @@
-import type {Comment, Like, Reply} from "@/models/storeModel";
+import type { Comment, Like, Post, Reply } from "@/models/storeModel";
 
 export interface ToastStoreModel {
   isActive: boolean;
@@ -72,4 +72,5 @@ export interface CRUDResponse {
   like?: Like;
   reply?: Reply;
   newBody?: string;
+  post?: Post;
 }

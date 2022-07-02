@@ -10,16 +10,16 @@ const toastStore = useToastStore();
 
 let formData = new FormData();
 const props = defineProps<{
-  userTo?: string
-}>()
+  userTo?: string;
+}>();
 const postBody = ref("");
 const files = ref<string[]>([]);
 
-console.log(props)
+console.log(props);
 const handleSubmit = async () => {
   formData.set("userId", thunderFeedStore.getUserId.toString());
   formData.set("body", postBody.value);
-  if(props.userTo != undefined) formData.set("userToId", props.userTo);
+  if (props.userTo != undefined) formData.set("userToId", props.userTo);
   const response = await thunderFeedStore.addPost(formData);
   if (response == undefined) return;
   toastStore.showToast(response);

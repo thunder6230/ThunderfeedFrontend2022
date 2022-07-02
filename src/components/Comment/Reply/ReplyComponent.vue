@@ -5,9 +5,10 @@ import TailwindClasses from "@/utilities/TailwindClasses";
 import { ref } from "vue";
 import type { AddReplyLikeParams } from "@/models/HelperModels";
 import EditReplyComponent from "@/components/Comment/Reply/EditReplyComponent.vue";
+import type { Reply } from "@/models/storeModel";
 
 const props = defineProps<{
-  reply: any;
+  reply: Reply;
   index: number;
 }>();
 const propsCopy = { ...props };
